@@ -9,21 +9,48 @@
  */
 export function drawBars(ctx, canvas, stepData, scaleMax) {
     const { array, comparing = [], swapping = [], sortedIndices = [], pivot = null } = stepData;
+    const minBars = 5;
+    const maxBars = 300;
+    const scaleFactor = 2;
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+    const t = Math.min(1, Math.max(0, (array.length - minBars) / (maxBars - minBars)));
+    const barGap = scaleFactor * (1 - t)
     const barWidth = canvas.width / array.length;
+
     const maxValue = scaleMax ?? Math.max(...array, 1);
     const { leftStreakEnd, rightStreakStart } = getEdgeStreaks(array);
 
     array.forEach((value, i) => {
         const barHeight = (value / maxValue) * (canvas.height - 20);
-        const x = i * barWidth;
+        const x0 = Math.round(i * barWidth);
+        const x1 = Math.round((i + 1) * barWidth);
         const y = canvas.height - barHeight;
 
         const isInEdgeStreak = i < leftStreakEnd || i >= rightStreakStart;
-        ctx.fillStyle = colorFor(i, { comparing, swapping, sortedIndices, pivot, isInEdgeStreak });
-        ctx.fillRect(x, y, barWidth - 1, barHeight)
+        ctx.fillStyle = colorFor(i, { 
+            comparing, 
+            swapping, 
+            sortedIndices, 
+            pivot, 
+            isInEdgeStreak 
+        });
+
+        const isActive =
+            comparing.includes(i) ||
+            swapping.includes(i) ||
+            i === pivot;
+
+        const drawX = x0;
+        const drawWidth = Math.max(1, (x1 - x0) - barGap);
+
+        ctx.fillRect(
+            drawX, 
+            y, 
+            drawWidth, 
+            barHeight
+        );
     });
 }
 
@@ -65,7 +92,7 @@ function colorFor(index, { comparing, swapping, sortedIndices, pivot, isInEdgeSt
 
 /**
  * Draws a horizontal bar chart comparing how long each algorithm took to
- * fully drain (no animation, no per step drawing js raw computation time).
+ * fully drain (no animation, no per step drawing js raw computation time)
  * log scaled because a linear scale would make the O(n log n) algorithms 
  * invisible as tiny slivers next to the O(n²) ones
  * @param {CanvasRenderingContext2D} ctx
