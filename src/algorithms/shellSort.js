@@ -1,13 +1,18 @@
 // src/js/algorithms/shellSort.js
 
+const meta = {
+    id: 'shell',
+    name: 'Shell Sort',
+    complexity: 'O(n log² n) approx',
+    description: "Similar to insertion sort but compares far apart elements first using a shrinking gap, so big moves happen early.",
+};
+
 /**
- * Shell Sort - insertion sort, but comparing elements far apart first
- * (the "gap"), shrinking the gap each pass until it's plain insertion sort
- * @ gap=1
+ * Shell Sort
  * @param {number[]} input
  * @yields {object} step snapshot - { array, comparing, swapping, sortedIndices }
  */
-export function* shellSort(input) {
+function* shellSort(input) {
     const a = [...input];
     const n = a.length;
 
@@ -30,3 +35,5 @@ export function* shellSort(input) {
 
     yield { array: [...a], comparing: [], swapping: [], sortedIndices: a.map((_, i) => i) };
 }
+
+export default { meta, run: shellSort };

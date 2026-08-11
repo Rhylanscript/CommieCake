@@ -1,18 +1,18 @@
 // src/js/algorithms/tungSort.js
 
+const meta = {
+    id: 'tung',
+    name: 'Tung Sort',
+    complexity: 'O(n log n) avg',
+    description: "Custom hybrid: dual pivot partitions into low/mid/high, recurses on each, and drops to insertion sort when small.",
+};
+
 /**
- * Tung Sort - a threeway hybrid sort using dual pivot segmentation (two actual
- * elements from the array not a value range split) to guarantee balanced
- * segments even with outlier data recursing into segments above the
- * threshold, dropping to insertion sort below it
- * 
- * expected `O(n log n)` on typical data; balanced by construction rather
- * than by luck (unlike the value range ver)
- * 
+ * Tung Sort
  * @param {number[]} input
  * @yields {object} step snapshot - { array, comparing, swapping, sortedIndices }
  */
-export function* tungSort(input) {
+function* tungSort(input) {
 	const a = [...input];
 	yield* processSegment(a, 0, a.length);
 	yield { array: [...a], comparing: [], swapping: [], sortedIndices: a.map((_, i) => i) };
@@ -97,3 +97,5 @@ function* insertionSweep(a, start, end) {
 		a[j + 1] = current;
 	}
 }
+
+export default { meta, run: tungSort };

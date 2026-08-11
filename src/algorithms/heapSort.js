@@ -1,13 +1,18 @@
 // src/js/algorithms/heapSort.js
 
+const meta = {
+    id: 'heap',
+    name: 'Heap Sort',
+    complexity: 'O(n log n)',
+    description: "Builds a max heap, then repeatedly swaps the root (largest remaining value) to the end and re heapifies.",
+};
+
 /**
- * Heap Sort. Builds a max heap, then repeatedly swaps the root (largest
- * remaining value) to the end and re heapifies. The heap lives entirely in
- * index arithmetic (2i+1, 2i+2) - no separate tree structure needed.
+ * Heap Sort
  * @param {number[]} input
  * @yields {object} step snapshot - { array, comparing, swapping, sortedIndices }
  */
-export function* heapSort(input) {
+function* heapSort(input) {
     const a = [...input];
     const n = a.length;
     const sortedIndices = [];
@@ -50,3 +55,5 @@ export function* heapSort(input) {
     sortedIndices.push(0);
     yield { array: [...a], comparing: [], swapping: [], sortedIndices: [...sortedIndices] };
 }
+
+export default { meta, run: heapSort };

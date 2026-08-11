@@ -1,13 +1,18 @@
 // src/js/algorithms/gnomeSort.js
 
+const meta = {
+    id: 'gnome',
+    name: 'Gnome Sort',
+    complexity: 'O(n²)',
+    description: "Like insertion sort but implemented as a single walking pointer. Step forward when the pair behind you is fine, step backward (after swapping) when it isnt.",
+};
+
 /**
- * Gnome Sort - like insertion sort but implemented as a single walking
- * pointer - step forward when the pair behind you is fine, step backward
- * (after swapping) when it isnt
+ * Gnome Sort
  * @param {number[]} input
  * @yields {object} step snapshot - { array, comparing, swapping, sortedIndices }
  */
-export function* gnomeSort(input) {
+function* gnomeSort(input) {
     const a = [...input];
     const n = a.length;
     let i = 0;
@@ -30,3 +35,5 @@ export function* gnomeSort(input) {
     }
     yield { array: [...a], comparing: [], swapping: [], sortedIndices: a.map((_, i) => i) };
 }
+
+export default { meta, run: gnomeSort };

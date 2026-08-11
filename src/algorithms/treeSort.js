@@ -1,17 +1,18 @@
 // src/js/algorithms/treeSort.js
 
+const meta = {
+    id: 'tree',
+    name: 'Tree Sort',
+    complexity: 'O(n log n) avg, O(n²) worst',
+    description: "Inserts every value into a binary search tree, then reads it back out ascending via an in order traversal.",
+};
+
 /**
- * Tree Sort - builds a binary search tree from the array (phase 1), then
- * reads it back out via an in order traversal (phase 2), which visits bst
- * nodes in ascending order for free 
- * 
- * structurally the most different algorithm here: two phases 
- * threaded together with `yield*` rather than one loop over the array
- * 
+ * Tree Sort
  * @param {number[]} input
  * @yields {object} step snapshot - { array, comparing, swapping, sortedIndices }
  */
-export function* treeSort(input) {
+function* treeSort(input) {
     const a = [...input];
     const n = a.length;
     let root = null;
@@ -56,3 +57,5 @@ function* inOrderWrite(node, a, sortedIndices, progress) {
 
     yield* inOrderWrite(node.right, a, sortedIndices, progress);
 }
+
+export default { meta, run: treeSort };

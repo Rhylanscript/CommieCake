@@ -1,12 +1,18 @@
 // src/js/algorithms/countingSort.js
 
+const meta = {
+	id: 'counting',
+	name: 'Counting Sort',
+	complexity: 'O(n + k)',
+	description: 'Tallies how many times each value occurs, then writes values back out in order (no comparisons)',
+};
+
 /**
- * Counting Sort - no comparisons at all. Tallies how many times each value
- * appears and writes values back in order
+ * Counting Sort
  * @param {number[]} input
  * @yields {object} step snapshot - { array, comparing, swapping, sortedIndices }
  */
-export function* countingSort(input) {
+function* countingSort(input) {
     const a = [...input];
     const n = a.length;
     const minVal = Math.min(...a);
@@ -37,3 +43,5 @@ export function* countingSort(input) {
 
     yield { array: [...a], comparing: [], swapping: [], sortedIndices: a.map((_, i) => i) };
 }
+
+export default { meta, run: countingSort };

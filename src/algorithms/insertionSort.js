@@ -1,11 +1,18 @@
 // src/js/algorithms/insertionSort.js
 
+const meta = {
+    id: 'insertion',
+    name: 'Insertion Sort',
+    complexity: 'O(n²)',
+    description: "Builds a sorted region one element at a time, shifting larger elements right to make room for each new one.",
+}
+
 /**
  * Insertion Sort.
  * @param {number[]} input
  * @yields {object} step snapshot - { array, comparing, swapping, sortedIndices }
  */
-export function* insertionSort(input) {
+function* insertionSort(input) {
     const a = [...input];
     const n = a.length;
 
@@ -31,3 +38,5 @@ export function* insertionSort(input) {
 
     yield { array: [...a], comparing: [], swapping: [], sortedIndices: a.map((_, i) => i) };
 }
+
+export default { meta, run: insertionSort };

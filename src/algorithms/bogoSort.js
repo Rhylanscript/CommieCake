@@ -1,13 +1,18 @@
 // src/js/algorithms/bogoSort.js
 
+const meta = {
+	id: 'bogo',
+	name: 'Bogo Sort',
+	complexity: 'O((n+1)!) expected',
+	description: "Shuffles randomly and checks if it got lucky. Expected runtime is astronomically bad.",
+};
+
 /**
- * Bogo Sort ("stupid sort") — shuffles randomly and checks if it got lucky.
- * Expected O((n+1)!) — this is a joke algorithm. Keep array size very small
- * (under ~8-10) or it will run effectively forever.
+ * Bogo Sort ("stupid sort")
  * @param {number[]} input
- * @yields {object} step snapshot — { array, comparing, swapping, sortedIndices }
+ * @yields {object} step snapshot - { array, comparing, swapping, sortedIndices }
  */
-export function* bogoSort(input) {
+function* bogoSort(input) {
     const a = [...input];
 
     while (!(yield* isSorted(a))) {
@@ -32,3 +37,5 @@ function shuffle(a) {
         [a[i], a[j]] = [a[j], a[i]];
     }
 }
+
+export default { meta, run: bogoSort };

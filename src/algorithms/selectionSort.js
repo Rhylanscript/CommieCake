@@ -1,11 +1,18 @@
 // src/js/algorithms/selectionSort.js
 
+const meta = {
+    id: 'selection',
+    name: 'Selection Sort',
+    complexity: 'O(n²)',
+    description: "Scans the unsorted region each pass to find the minimum, then swaps it into place. (one swap every pass)",
+};
+
 /**
  * Selection Sort
  * @param {number[]} input
  * @yields {object} step snapshot - { array, comparing, swapping, sortedIndices }
  */
-export function* selectionSort(input) {
+function* selectionSort(input) {
     const a = [...input];
     const n = a.length;
     const sortedIndices = [];
@@ -32,3 +39,5 @@ export function* selectionSort(input) {
 
     yield { array: [...a], comparing: [], swapping: [], sortedIndices: [...sortedIndices] };
 }
+
+export default { meta, run: selectionSort };

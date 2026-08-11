@@ -8,6 +8,7 @@ const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 
 const algorithmSelect = document.getElementById('algorithm-select');
+const algorithmDescEl = document.getElementById('algorithm-description');
 
 const sizeSlider = document.getElementById('size-slider');
 const sizeNumber = document.getElementById('size-number');
@@ -69,6 +70,10 @@ function updateComplexityLabel() {
 	complexityValueEl.textContent = getSelectedAlgorithm().complexity;
 }
 
+function updateDescription() {
+	algorithmDescEl.textContent = getSelectedAlgorithm().description;
+}
+
 function generateShuffledArray(size) {
 	const values = Array.from({ length: size }, (_, i) => i + 1);
 	for (let i = values.length - 1; i > 0; i--) {
@@ -79,7 +84,7 @@ function generateShuffledArray(size) {
 }
 
 function renderCurrentArray() {
-	drawBars(ctx, canvas, { array: currentArray });
+	drawBars(ctx, canvas, { array: currentArray }, currentMaxValue);
 }
 
 function restoreVisualizerView() {
@@ -192,6 +197,7 @@ function handleAlgorithmChange() {
 	resetTimer();
 	resetCounters();
 	restoreVisualizerView();
+	updateDescription();
 	renderCurrentArray();
 	if (isCodePanelOpen) updateCodeContent();
 }
@@ -358,6 +364,28 @@ function bindRangeToNumber(rangeEl, numberEl, onChange) {
 bindRangeToNumber(sizeSlider, sizeNumber, () => {});
 bindRangeToNumber(speedSlider, speedNumber, () => {});
 
+// --- keyboard shortcuts ---
+
+// space: play / pause
+// right arrow: step forward
+
+function handleKeydown(e) {
+	const focusedTag = document.activeElement.tagName;
+	if (focusedTag === 'INPUT' || focusedTag === 'SELECT' || focusedTag === 'TEXTAREA') return;
+
+	if (e.code === 'Space') {
+		e.preventDefault();
+		togglePlayPause();
+	} else if (e.code === 'ArrowRight') {
+		e.preventDefault();
+		handleStep();
+	}
+}
+
+// --- listeners ---
+
+document.addEventListener('keydown', handleKeydown);
+
 algorithmSelect.addEventListener('change', handleAlgorithmChange);
 newArrayBtn.addEventListener('click', handleNewArray);
 playPauseBtn.addEventListener('click', togglePlayPause);
@@ -367,4 +395,5 @@ codeBtn.addEventListener('click', handleToggleCode);
 
 populateAlgorithmMenu();
 updateComplexityLabel();
+updateDescription();
 handleNewArray();

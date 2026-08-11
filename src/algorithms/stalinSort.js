@@ -1,12 +1,18 @@
 // src/js/algorithms/stalinSort.js
 
+const meta = {
+	id: 'stalin',
+	name: 'Stalin Sort',
+	complexity: 'O(n) with minor casualties',
+	description: 'Deletes any element smaller than the last one kept. What remains is sorted.',
+};
+
 /**
- * stalin Sort - walks through once whilst keeping a running "last approved" value
- * anything smaller than the last approved value gets DELETED
+ * Stalin Sort
  * @param {number[]} input
  * @yields {object} step snapshot - { array, comparing, swapping, sortedIndices }
  */
-export function* stalinSort(input) {
+function* stalinSort(input) {
     const a = [...input];
     if (a.length === 0) {
         yield { array: [], comparing: [], swapping: [], sortedIndices: [] };
@@ -32,3 +38,5 @@ export function* stalinSort(input) {
 
     yield { array: [...a], comparing: [], swapping: [], sortedIndices: a.map((_, k) => k) };
 }
+
+export default { meta, run: stalinSort };

@@ -1,12 +1,18 @@
 // src/js/algorithms/bucketSort.js
 
+const meta = {
+    id: 'bucket',
+    name: 'Bucket Sort',
+    complexity: 'O(n + k) avg, O(n²) worst',
+    description: "Distributes values into several buckets by range, sorts each bucket individually, then concatenates them.",
+};
+
 /**
- * Bucket Sort - distributes values into several buckets by value range,
- * sorts each bucket individually, then concatenates them back in order
+ * Bucket Sort
  * @param {number[]} input
  * @yields {object} step snapshot - { array, comparing, swapping, sortedIndices }
  */
-export function* bucketSort(input) {
+function* bucketSort(input) {
     const a = [...input];
     const n = a.length;
     const minVal = Math.min(...a);
@@ -52,3 +58,5 @@ function insertionSortInPlace(bucket) {
         bucket[j + 1] = current;
     }
 }
+
+export default { meta, run: bucketSort };

@@ -1,13 +1,18 @@
 // src/js/algorithms/cocktailShakerSort.js
 
+const meta = {
+    id: 'cocktail',
+    name: 'Cocktail Shaker Sort',
+    complexity: 'O(n²)',
+    description: "Bubble sort that alternates direction each pass, shrinking the unsorted window from both ends at once.",
+};
+
 /**
- * Cocktail Shaker Sort — bubble sort that alternates direction each pass
- * (left-to-right, then right-to-left), shrinking the unsorted window from
- * both ends instead of just one.
+ * Cocktail Shaker Sort
  * @param {number[]} input
  * @yields {object} step snapshot — { array, comparing, swapping, sortedIndices }
  */
-export function* cocktailShakerSort(input) {
+function* cocktailShakerSort(input) {
     const a = [...input];
     let start = 0;
     let end = a.length - 1;
@@ -48,3 +53,5 @@ function sortedEdges(n, start, end) {
     for (let k = end + 1; k < n; k++) indices.push(k);
     return indices;
 }
+
+export default { meta, run: cocktailShakerSort };

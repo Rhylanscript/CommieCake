@@ -1,14 +1,20 @@
 // src/js/algorithms/slowSort.js
 
+const meta = {
+	id: 'slow',
+	name: 'Slowsort',
+	complexity: 'O(n^log n)',
+	description: "The evil twin of quicksort that uses the 'multiply and surrender' strategy: deliberately does more recursive work than necessary at every step.",
+};
+
 /**
- * slowsort - the evil twin of quicksort that uses the "multiply and surrender"
- * strat: deliberately does more recursive work than necessary at every
- * step. ~O(n^(log n)) - grows super fast. keep array size around 10-15 
+ * Slowsort
+ * ~O(n^(log n)) - grows super fast. keep array size around 10-15 
  * or lower, or this will hang the tab lol
  * @param {number[]} input
  * @yields {object} step snapshot - { array, comparing, swapping, sortedIndices }
  */
-export function* slowSort(input) {
+function* slowSort(input) {
     const a = [...input];
     yield* sortRange(a, 0, a.length - 1);
     yield { array: [...a], comparing: [], swapping: [], sortedIndices: a.map((_, i) => i) };
@@ -29,3 +35,5 @@ function* sortRange(a, i, j) {
 
     yield* sortRange(a, i, j - 1);
 }
+
+export default { meta, run: slowSort };

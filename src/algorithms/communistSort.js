@@ -1,12 +1,18 @@
 // src/js/algorithms/communistSort.js
 
+const meta = {
+	id: 'communist',
+	name: 'Communist Sort',
+	complexity: 'O(n)',
+	description: "Replaces every value with the average. All values are equal, therefore sorted.",
+};
+
 /**
- * Communist Sort - computes the average of every value then overwrites the
- * entire array with that one number
+ * Communist Sort
  * @param {number[]} input
  * @yields {object} step snapshot - { array, comparing, swapping, sortedIndices }
  */
-export function* communistSort(input) {
+function* communistSort(input) {
     const a = [...input];
     const n = a.length;
     if (n === 0) {
@@ -30,3 +36,5 @@ export function* communistSort(input) {
 
     yield { array: [...a], comparing: [], swapping: [], sortedIndices: a.map((_, i) => i) };
 }
+
+export default { meta, run: communistSort };

@@ -1,17 +1,18 @@
 // src/js/algorithms/oddEvenSort.js
 
+const meta = {
+    id: 'oddeven',
+    name: 'Odd-Even Transposition Sort',
+    complexity: 'O(n²) sequential, O(n) phases',
+    description: "Alternates comparing all even indexed and all odd indexed pairs simultaneously (designed for parallel hardware)",
+};
+
 /**
- * Odd-Even Transposition Sort. Alternates between two full passes each
- * round: compare-and-swap every EVEN-indexed pair (0,1),(2,3),... at once,
- * then every ODD-indexed pair (1,2),(3,4),... at once. Unlike every other
- * algorithm here, each yield represents a whole phase's worth of pairs
- * happening simultaneously — not a single cursor crawling one step at a
- * time — which is why it reads as "waves" across the array rather than a
- * moving highlight.
+ * Odd-Even Transposition Sort.
  * @param {number[]} input
  * @yields {object} step snapshot — { array, comparing, swapping, sortedIndices }
  */
-export function* oddEvenSort(input) {
+function* oddEvenSort(input) {
   const a = [...input];
   const n = a.length;
   let isSorted = false;
@@ -54,3 +55,5 @@ function* runPhase(a, startIndex) {
 
   return swapping.length === 0;
 }
+
+export default { meta, run: oddEvenSort };

@@ -1,11 +1,18 @@
 // src/js/algorithms/mergeSort.js
 
+const meta = {
+    id: 'merge',
+    name: 'Merge Sort',
+    complexity: 'O(n log n)',
+    description: "Recursively splits array in half, sorts each half, then merges the two sorted halves back together.",
+};
+
 /**
- * Merge Sort.
+ * Merge Sort
  * @param {number[]} input
- * @yields {object} step snapshot — { array, comparing, swapping, sortedIndices }
+ * @yields {object} step snapshot - { array, comparing, swapping, sortedIndices }
  */
-export function* mergeSort(input) {
+function* mergeSort(input) {
     const a = [...input];
     yield* sortRange(a, 0, a.length - 1);
     yield { array: [...a], comparing: [], swapping: [], sortedIndices: a.map((_, i) => i) };
@@ -53,3 +60,5 @@ function* merge(a, left, mid, right) {
         j++; k++;
     }
 }
+
+export default { meta, run: mergeSort };

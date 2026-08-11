@@ -1,14 +1,18 @@
 // src/js/algorithms/pancakeSort.js
 
+const meta = {
+    id: 'pancake',
+    name: 'Pancake Sort',
+    complexity: 'O(n²)',
+    description: "Sorts using one move: flipping (reversing) the front of the array (like sorting pancakes with a spatula)",
+};
+
 /**
- * Pancake Sort - sorts using only one operation: "flip (reverse) the first
- * k elements" repeatedly finds the largest unsorted value and flips it to
- * the front, then flips it again to send it to its final position at the
- * back of the unsorted region
+ * Pancake Sort
  * @param {number[]} input
  * @yields {object} step snapshot - { array, comparing, swapping, sortedIndices }
  */
-export function* pancakeSort(input) {
+function* pancakeSort(input) {
     const a = [...input];
     const n = a.length;
     const sortedIndices = [];
@@ -45,3 +49,5 @@ function* flip(a, k) {
         right--;
     }
 }
+
+export default { meta, run: pancakeSort };

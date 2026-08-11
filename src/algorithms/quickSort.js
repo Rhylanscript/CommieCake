@@ -1,11 +1,18 @@
 // src/js/algorithms/quickSort.js
 
+const meta = {
+    id: 'quick',
+    name: 'Quicksort',
+    complexity: 'O(n log n) avg',
+    description: "Picks a pivot, partitions smaller values to one side and larger to the other, then recurses on each side.",
+};
+
 /**
  * Quick Sort
  * @param {number[]} input
  * @yields {object} step snapshot - { array, comparing, swapping, sortedIndices, pivot }
  */
-export function* quickSort(input) {
+function* quickSort(input) {
     const a = [...input];
     yield* sortRange(a, 0, a.length - 1);
     yield { array: [...a], comparing: [], swapping: [], sortedIndices: a.map((_, i) => i) };
@@ -38,3 +45,5 @@ function* partition(a, low, high) {
 
     return i + 1; // pivots final resting idx
 }
+
+export default { meta, run: quickSort };
