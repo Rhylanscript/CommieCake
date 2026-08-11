@@ -3,28 +3,38 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Sorting Visualizer</title>
+        <title>CommieCake | Sorting Visualiser</title>
         <link rel="stylesheet" href="src/css/style.css" />
+        <link rel="stylesheet" href="src/css/important.css" />
     </head>
     <body>
         <div id="app">
             <aside id="controls">
                 <div class="panel-header">
-                    <h1>SORT/VIZ</h1>
-                    <p class="tagline">watch it think</p>
+                    <h1>CommieCake</h1>
+                    <p class="tagline">Data for all</p>
                 </div>
 
                 <div class="control-group">
                     <label for="algorithm-select">Algorithm</label>
                     <select id="algorithm-select"></select>
-                    <p id="algorithm-description" class="algorithm-description"></p>
+                    <div class="description-row">
+                        <p id="algorithm-description" class="algorithm-description"></p>
+                        <button 
+                            id="info-btn" class="info-btn" type="button"
+                            aria-label="Show Full Description"
+                            aria-expanded="false"
+                            aria-controls="description-popup"
+                        >i</button>
+                        <div id="description-popup" class="description-popup" role="tooltip"></div>
+                    </div>
                 </div>
 
                 <div class="control-group">
                     <label for="size-slider">Array size</label>
                     <div class="range-row">
                         <input type="range" id="size-slider" min="5" max="1000" value="250" />
-                        <input type="number" id="size-number" min="5" max="500" value="250" />
+                        <input type="number" id="size-number" min="5" max="1000" value="250" />
                     </div>
                 </div>
 
@@ -43,6 +53,8 @@
                     <button id="benchmark-btn">Benchmark</button>
                     <button id="code-btn">Show Code</button>
                 </div>
+
+                <p class="shortcuts-hint">space: play/pause ➞: step</p>
             </aside>
 
             <main>

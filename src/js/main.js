@@ -9,6 +9,8 @@ const ctx = canvas.getContext('2d');
 
 const algorithmSelect = document.getElementById('algorithm-select');
 const algorithmDescEl = document.getElementById('algorithm-description');
+const infoBtn = document.getElementById('info-btn');
+const descriptionPopupEl = document.getElementById('description-popup');
 
 const sizeSlider = document.getElementById('size-slider');
 const sizeNumber = document.getElementById('size-number');
@@ -71,7 +73,27 @@ function updateComplexityLabel() {
 }
 
 function updateDescription() {
-	algorithmDescEl.textContent = getSelectedAlgorithm().description;
+	const text = getSelectedAlgorithm().description;
+	algorithmDescEl.textContent = text;
+	descriptionPopupEl.textContent = text;
+}
+
+// --- description popup ---
+
+function setPopupOpen(open) {
+	descriptionPopupEl.classList.toggle('open', open);
+	infoBtn.setAttribute('aria-expanded', String(open));
+}
+
+function handleInfoBtnClick(e) {
+	e.stopPropagation();
+	setPopupOpen(!descriptionPopupEl.classList.contains('open'));
+}
+
+function handleDocumentClick(e) {
+	if (e.target !== infoBtn && !descriptionPopupEl.contains(e.target)) {
+		setPopupOpen(false);
+	}
 }
 
 function generateShuffledArray(size) {
@@ -370,6 +392,12 @@ bindRangeToNumber(speedSlider, speedNumber, () => {});
 // right arrow: step forward
 
 function handleKeydown(e) {
+
+	if (e.key === 'Escape') {
+		setPopupOpen(false);
+		return;
+	}
+
 	const focusedTag = document.activeElement.tagName;
 	if (focusedTag === 'INPUT' || focusedTag === 'SELECT' || focusedTag === 'TEXTAREA') return;
 
@@ -385,8 +413,11 @@ function handleKeydown(e) {
 // --- listeners ---
 
 document.addEventListener('keydown', handleKeydown);
+document.addEventListener('click', handleDocumentClick);
 
 algorithmSelect.addEventListener('change', handleAlgorithmChange);
+infoBtn.addEventListener('click', handleInfoBtnClick);
+
 newArrayBtn.addEventListener('click', handleNewArray);
 playPauseBtn.addEventListener('click', togglePlayPause);
 stepBtn.addEventListener('click', handleStep);
