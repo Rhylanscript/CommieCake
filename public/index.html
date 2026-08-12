@@ -16,12 +16,24 @@
                 </div>
 
                 <div class="control-group">
-                    <label for="algorithm-select">Algorithm</label>
-                    <select id="algorithm-select"></select>
+                    <label id="algo-picker-label" for="algo-picker-toggle">Algorithm</label>
+                    <button
+                        type="button"
+                        id="algo-picker-toggle"
+                        class="algo-picker-toggle"
+                        aria-haspopup="dialog"
+                        aria-expanded="false"
+                    >
+                        <span id="algo-picker-current"></span>
+                        <span class="algo-picker-hint">Select</span>
+                    </button>
+
                     <div class="description-row">
                         <p id="algorithm-description" class="algorithm-description"></p>
                         <button 
-                            id="info-btn" class="info-btn" type="button"
+                            id="info-btn" 
+                            class="info-btn" 
+                            type="button"
                             aria-label="Show Full Description"
                             aria-expanded="false"
                             aria-controls="description-popup"
@@ -81,6 +93,19 @@
                     <pre id="code-panel" class="hidden"><code id="code-content"></code></pre>
                 </div>
             </main>
+        </div>
+
+        <div id="command-palette-backdrop" class="command-palette-backdrop hidden">
+            <div class="command-palette" role="dialog" aria-modal="true" aria-label="Choose Algorithm">
+                <input
+                    type="text"
+                    id="command-palette-search"
+                    class="command-palette-search"
+                    placeholder="Search Algorithms..."
+                    autocomplete="off"
+                />
+                <div id="command-palette-list" class="command-palette-list" role="listbox" aria-label="Algorithm"></div>
+            </div>
         </div>
 
         <script type="module" src="src/js/main.js"></script>

@@ -425,3 +425,128 @@ canvas.no-grid {
     color: var(--text-dim);
     text-align: center;
 }
+
+/* ---------- algorithm picker trigger ---------- */
+
+.algo-picker-toggle {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    background: var(--bg);
+    color: var(--text);
+    border: 1px solid var(--panel-border);
+    border-radius: 4px;
+    padding: 8px 10px;
+    font: inherit;
+    font-size: 0.85rem;
+    cursor: pointer;
+    text-align: left;
+}
+
+.algo-picker-toggle:hover,
+.algo-picker-toggle:focus-visible {
+    border-color: var(--teal);
+    color: var(--teal);
+    outline: none;
+}
+
+.algo-picker-hint {
+    font-size: 0.65rem;
+    color: var(--text-dim);
+    flex-shrink: 0;
+}
+
+/* ---------- algorithm/command palette/modal overlay ---------- */
+
+.command-palette-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    background: rgba(8, 10, 24, 0.7);
+    display: flex;
+    justify-content: center;
+    padding-top: 12vh;
+}
+
+.command-palette-backdrop.hidden {
+    display: none;
+}
+
+.command-palette {
+    width: 480px;
+    max-width: 90vw;
+    max-height: 70vh;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background: var(--panel);
+    border: 1px solid var(--panel-border);
+    border-radius: 8px;
+    padding: 14px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.command-palette-search {
+    width: 100%;
+    box-sizing: border-box;
+    background: var(--bg);
+    color: var(--text);
+    border: 1px solid var(--panel-border);
+    border-radius: 6px;
+    padding: 10px 12px;
+    font: inherit;
+    font-size: 0.95rem;
+}
+
+.command-palette-search:focus-visible {
+    outline: 2px solid var(--teal);
+    outline-offset: 1px;
+}
+
+.command-palette-list {
+    overflow-y: auto;
+}
+
+.algo-picker-group-label {
+    margin: 10px 0 4px;
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-dim);
+}
+
+.algo-picker-group-label:first-child {
+    margin-top: 0;
+}
+
+.algo-picker-option {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    background: transparent;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 10px;
+    font: inherit;
+    font-size: 0.85rem;
+    color: var(--text);
+    cursor: pointer;
+    text-align: left;
+}
+
+.algo-picker-option-complexity {
+    font-size: 0.68rem;
+    color: var(--text-dim);
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.algo-picker-option:hover,
+.algo-picker-option.active {
+    background: rgba(62, 201, 176, 0.14);
+    color: var(--teal);
+}

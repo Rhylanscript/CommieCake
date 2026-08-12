@@ -7,7 +7,12 @@ import { algorithms } from './registry.js';
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 
-const algorithmSelect = document.getElementById('algorithm-select');
+const algoPickerToggleEl = document.getElementById('algo-picker-toggle');
+const algoPickerCurrentEl = document.getElementById('algo-picker-current');
+const commandPaletteBackdropEl = document.getElementById('command-palette-backdrop');
+const commandPaletteSearchEl = document.getElementById('command-palette-search');
+const commandPaletteListEl = document.getElementById('command-palette-list');
+
 const algorithmDescEl = document.getElementById('algorithm-description');
 const infoBtn = document.getElementById('info-btn');
 const descriptionPopupEl = document.getElementById('description-popup');
@@ -37,6 +42,9 @@ let isPlaying = false;
 let animationTimeoutId = null;
 let animationFrameId = null;
 let isCodePanelOpen = false;
+let isCommandPaletteOpen = false;
+let activeOptionIndex = 0;
+let selectedAlgorithmId = algorithms[0].id;
 
 // --- timer state ---
 let accumulatedElapsedMs = 0;
@@ -55,17 +63,8 @@ const SPEED_MAX = 500;
 const MAX_STEPS_PER_TICK = 4000;
 const FRAME_BUDGET_MS = 8;
 
-function populateAlgorithmMenu() {
-	algorithms.forEach(({ id, name }) => {
-		const option = document.createElement('option');
-		option.value = id;
-		option.textContent = name;
-		algorithmSelect.appendChild(option);
-	});
-}
-
 function getSelectedAlgorithm() {
-	return algorithms.find((a) => a.id === algorithmSelect.value);
+	return algorithms.find((a) => a.id === selectedAlgorithmId);
 }
 
 function updateComplexityLabel() {
@@ -76,6 +75,119 @@ function updateDescription() {
 	const text = getSelectedAlgorithm().description;
 	algorithmDescEl.textContent = text;
 	descriptionPopupEl.textContent = text;
+}
+
+// --- algorithm selection palette/modal thingy idk what to call it ill just settle on palette does that make sense yeah i think so bro shut up ts is a comment ---
+
+function populateCommandPaletteList() {
+	const grouped = new Map();
+	algorithms.forEach((algo) => {
+		if (!grouped.has(algo.category)) grouped.set(algo.category, []);
+		grouped.get(algo.category).push(algo);
+	});
+
+	commandPaletteListEl.innerHTML = '';
+
+	grouped.forEach((algosInGroup, category) => {
+		const groupLabel = document.createElement('p');
+		groupLabel.className = 'algo-picker-group-label';
+		groupLabel.textContent = category;
+		commandPaletteListEl.appendChild(groupLabel);
+
+		algosInGroup.forEach((algo) => {
+			const option = document.createElement('button');
+			option.type = 'button';
+			option.className = 'algo-picker-option';
+			option.dataset.id = algo.id;
+			option.dataset.name = algo.name.toLowerCase();
+			option.setAttribute('role', 'option');
+			option.innerHTML = `<span>${algo.name}</span><span class="algo-picker-option-complexity">${algo.complexity}</span>`;
+			option.addEventListener('click', () => handleAlgorithmPick(algo.id));
+			option.addEventListener('mouseenter', () => {
+				const visible = getVisibleOptions();
+				const hoveredIndex = visible.indexOf(option);
+				if (hoveredIndex !== -1) setActiveIndex(hoveredIndex, visible);
+			});
+			commandPaletteListEl.appendChild(option);
+		});
+	});
+}
+
+function getVisibleOptions() {
+	return Array.from(commandPaletteListEl.querySelectorAll('.algo-picker-option')).filter(
+		(el) => el.style.display !== 'none'
+	);
+}
+
+function setActiveIndex(index, visible) {
+	activeOptionIndex = index;
+	visible.forEach((el, i) => el.classList.toggle('active', i === activeOptionIndex));
+	visible[activeOptionIndex]?.scrollIntoView({ block: 'nearest' });
+}
+
+function moveActiveIndex(delta) {
+	const visible = getVisibleOptions();
+	if (visible.length === 0) return;
+	const nextIndex = (activeOptionIndex + delta + visible.length) % visible.length;
+	setActiveIndex(nextIndex, visible);
+}
+
+function selectActiveOption() {
+	const visible = getVisibleOptions();
+	const el = visible[activeOptionIndex];
+	if (el) handleAlgorithmPick(el.dataset.id);
+}
+
+function filterCommandPaletteOptions(query) {
+	const normalizedQuery = query.trim().toLowerCase();
+
+	commandPaletteListEl.querySelectorAll('.algo-picker-option').forEach((optionEl) => {
+		optionEl.style.display = optionEl.dataset.name.includes(normalizedQuery) ? '' : 'none';
+	});
+
+	commandPaletteListEl.querySelectorAll('.algo-picker-group-label').forEach((labelEl) => {
+		let node = labelEl.nextElementSibling;
+		let groupHasVisibleOption = false;
+		while (node && !node.classList.contains('algo-picker-group-label')) {
+			if (node.style.display !== 'none') groupHasVisibleOption = true;
+			node = node.nextElementSibling;
+		}
+		labelEl.style.display = groupHasVisibleOption ? '' : 'none';
+	});
+
+	setActiveIndex(0, getVisibleOptions());
+}
+
+function openCommandPalette() {
+	isCommandPaletteOpen = true;
+	commandPaletteBackdropEl.classList.remove('hidden');
+	algoPickerToggleEl.setAttribute('aria-expanded', 'true');
+	commandPaletteSearchEl.value = '';
+	filterCommandPaletteOptions('');
+	commandPaletteSearchEl.focus();
+}
+
+function closeCommandPalette() {
+	isCommandPaletteOpen = false;
+	commandPaletteBackdropEl.classList.add('hidden');
+	algoPickerToggleEl.setAttribute('aria-expanded', 'false');
+}
+
+function handleCommandPaletteSearchInput() {
+	filterCommandPaletteOptions(commandPaletteSearchEl.value);
+}
+
+function handleBackdropClick(e) {
+	if (e.target === commandPaletteBackdropEl) closeCommandPalette();
+}
+
+function handleAlgorithmPick(id) {
+	if (id !== selectedAlgorithmId) {
+		selectedAlgorithmId = id;
+		algoPickerCurrentEl.textContent = getSelectedAlgorithm().name;
+		handleAlgorithmChange();
+	}
+	closeCommandPalette();
 }
 
 // --- description popup ---
@@ -187,8 +299,8 @@ function countUnits(indices) {
 }
 
 function tallyStep(stepData) {
-	comparisonCount += countUnits(stepData.comparing)
-	swapCount += countUnits(stepData.swapping)
+	comparisonCount += countUnits(stepData.comparing);
+	swapCount += countUnits(stepData.swapping);
 	updateCounterDisplay();
 }
 
@@ -391,7 +503,31 @@ bindRangeToNumber(speedSlider, speedNumber, () => {});
 // space: play / pause
 // right arrow: step forward
 
+// > palette options
+// esc:	close modal
+// down arrow: select option below current
+// up arrow: select option above current
+// enter: select option
+
 function handleKeydown(e) {
+	// command palette keybinds
+	if (isCommandPaletteOpen) {
+		if (e.key === 'Escape') {
+			closeCommandPalette();
+		} else if (e.key === 'ArrowDown') {
+			e.preventDefault();
+			moveActiveIndex(1);
+		} else if (e.key === 'ArrowUp') {
+			e.preventDefault();
+			moveActiveIndex(-1);
+		} else if (e.key === 'Enter') {
+			e.preventDefault();
+			selectActiveOption();
+		}
+		return;
+	}
+
+	// other stuff
 
 	if (e.key === 'Escape') {
 		setPopupOpen(false);
@@ -414,9 +550,11 @@ function handleKeydown(e) {
 
 document.addEventListener('keydown', handleKeydown);
 document.addEventListener('click', handleDocumentClick);
-
-algorithmSelect.addEventListener('change', handleAlgorithmChange);
 infoBtn.addEventListener('click', handleInfoBtnClick);
+
+algoPickerToggleEl.addEventListener('click', openCommandPalette);
+commandPaletteSearchEl.addEventListener('input', handleCommandPaletteSearchInput);
+commandPaletteBackdropEl.addEventListener('click', handleBackdropClick);
 
 newArrayBtn.addEventListener('click', handleNewArray);
 playPauseBtn.addEventListener('click', togglePlayPause);
@@ -424,7 +562,8 @@ stepBtn.addEventListener('click', handleStep);
 benchmarkBtn.addEventListener('click', handleBenchmark);
 codeBtn.addEventListener('click', handleToggleCode);
 
-populateAlgorithmMenu();
+populateCommandPaletteList();
+algoPickerCurrentEl.textContent = getSelectedAlgorithm().name;
 updateComplexityLabel();
 updateDescription();
 handleNewArray();
