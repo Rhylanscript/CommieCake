@@ -1,4 +1,4 @@
-// src/js/algorithms/quickSort.js
+// public/js/algorithms/quickSort.js
 
 const meta = {
     id: 'quick',

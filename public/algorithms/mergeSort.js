@@ -1,4 +1,4 @@
-// src/js/algorithms/mergeSort.js
+// public/js/algorithms/mergeSort.js
 
 const meta = {
     id: 'merge',

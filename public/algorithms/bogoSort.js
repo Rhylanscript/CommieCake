@@ -1,4 +1,4 @@
-// src/js/algorithms/bogoSort.js
+// public/js/algorithms/bogoSort.js
 
 const meta = {
 	id: 'bogo',

@@ -1,4 +1,4 @@
-// src/js/algorithms/stalinSort.js
+// public/js/algorithms/stalinSort.js
 
 const meta = {
 	id: 'stalin',

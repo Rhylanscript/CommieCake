@@ -1,4 +1,4 @@
-// src/js/renderer.js
+// public/js/renderer.js
 
 /**
  * Draws one animation frame

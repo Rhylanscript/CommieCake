@@ -1,4 +1,4 @@
-// src/js/codeHighlight.js
+// public/js/codeHighlight.js
 
 const KEYWORDS =
   'function|export|import|from|const|let|var|return|if|else|for|while|break|continue|new|yield|of|in|typeof|null|true|false';

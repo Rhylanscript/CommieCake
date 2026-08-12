@@ -1,4 +1,4 @@
-// src/js/algorithms/heapSort.js
+// public/js/algorithms/heapSort.js
 
 const meta = {
     id: 'heap',

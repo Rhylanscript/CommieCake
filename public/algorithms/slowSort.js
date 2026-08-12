@@ -1,4 +1,4 @@
-// src/js/algorithms/slowSort.js
+// public/js/algorithms/slowSort.js
 
 const meta = {
 	id: 'slow',

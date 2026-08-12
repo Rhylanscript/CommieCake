@@ -1,4 +1,4 @@
-// src/js/algorithms/selectionSort.js
+// public/js/algorithms/selectionSort.js
 
 const meta = {
     id: 'selection',

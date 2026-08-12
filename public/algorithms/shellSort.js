@@ -1,4 +1,4 @@
-// src/js/algorithms/shellSort.js
+// public/js/algorithms/shellSort.js
 
 const meta = {
     id: 'shell',

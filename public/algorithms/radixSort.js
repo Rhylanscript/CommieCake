@@ -1,4 +1,4 @@
-// src/js/algorithms/radixSort.js
+// public/js/algorithms/radixSort.js
 
 const meta = {
 	id: 'radix',

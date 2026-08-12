@@ -1,4 +1,4 @@
-// src/js/algorithms/gnomeSort.js
+// public/js/algorithms/gnomeSort.js
 
 const meta = {
     id: 'gnome',

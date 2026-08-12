@@ -1,4 +1,4 @@
-// src/js/algorithms/bubbleSort.js
+// public/js/algorithms/bubbleSort.js
 
 const meta = {
     id: 'bubble',

@@ -1,4 +1,4 @@
-// src/js/algorithms/treeSort.js
+// public/js/algorithms/treeSort.js
 
 const meta = {
     id: 'tree',

@@ -1,4 +1,4 @@
-// src/js/algorithms/insertionSort.js
+// public/js/algorithms/insertionSort.js
 
 const meta = {
     id: 'insertion',

@@ -1,4 +1,4 @@
-// src/js/main.js
+// public/js/main.js
 
 import { drawBars, drawBenchmarkChart, drawBenchmarkLoadingMessage } from './renderer.js';
 import { highlightJs } from './codeHighlight.js';

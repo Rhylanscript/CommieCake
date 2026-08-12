@@ -1,4 +1,4 @@
-// src/js/algorithms/oddEvenSort.js
+// public/js/algorithms/oddEvenSort.js
 
 const meta = {
     id: 'oddeven',

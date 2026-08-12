@@ -1,4 +1,4 @@
-// src/js/algorithms/cocktailShakerSort.js
+// public/js/algorithms/cocktailShakerSort.js
 
 const meta = {
     id: 'cocktail',

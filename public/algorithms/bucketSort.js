@@ -1,4 +1,4 @@
-// src/js/algorithms/bucketSort.js
+// public/js/algorithms/bucketSort.js
 
 const meta = {
     id: 'bucket',

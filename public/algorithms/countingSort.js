@@ -1,4 +1,4 @@
-// src/js/algorithms/countingSort.js
+// public/js/algorithms/countingSort.js
 
 const meta = {
 	id: 'counting',

@@ -1,4 +1,4 @@
-// src/js/algorithms/pancakeSort.js
+// public/js/algorithms/pancakeSort.js
 
 const meta = {
     id: 'pancake',

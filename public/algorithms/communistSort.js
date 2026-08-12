@@ -1,4 +1,4 @@
-// src/js/algorithms/communistSort.js
+// public/js/algorithms/communistSort.js
 
 const meta = {
 	id: 'communist',

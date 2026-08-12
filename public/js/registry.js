@@ -1,4 +1,4 @@
-// src/js/registry.js
+// public/js/registry.js
 
 import bogoSort from "../algorithms/bogoSort.js";
 import bubblesort from "../algorithms/bubbleSort.js";

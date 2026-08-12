@@ -1,4 +1,4 @@
-// src/js/algorithms/tungSort.js
+// public/js/algorithms/tungSort.js
 
 const meta = {
     id: 'tung',
