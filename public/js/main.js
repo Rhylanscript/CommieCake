@@ -3,6 +3,7 @@
 import { drawBars, drawBenchmarkChart, drawBenchmarkLoadingMessage } from './renderer.js';
 import { highlightJs } from './codeHighlight.js';
 import { algorithms } from './registry.js';
+import { setSoundEnabled, isSoundEnabled, playComparisonTone, playSwapTone, playCompletionChime, isCustomSoundReady, playCustomSample, preloadCustomSounds } from './sound.js';
 
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
@@ -27,6 +28,9 @@ const playPauseBtn = document.getElementById('play-pause-btn');
 const stepBtn = document.getElementById('step-btn');
 const benchmarkBtn = document.getElementById('benchmark-btn');
 const codeBtn = document.getElementById('code-btn');
+
+const soundBtn = document.getElementById('sound-btn');
+const soundIcon = document.getElementById('sound-icon');
 
 const timerValueEl = document.getElementById('timer-value');
 const complexityValueEl = document.getElementById('complexity-value');
@@ -75,6 +79,48 @@ function updateDescription() {
 	const text = getSelectedAlgorithm().description;
 	algorithmDescEl.textContent = text;
 	descriptionPopupEl.textContent = text;
+}
+
+// --- sound ---
+
+function handleSoundBtnClick() {
+	const next = !isSoundEnabled();
+	setSoundEnabled(next);
+	soundIcon.src = next ? './assets/images/sound-on.svg' : './assets/images/sound-off.svg';
+	soundBtn.classList.toggle('active', next);
+	soundBtn.setAttribute('aria-pressed', String(next));
+}
+
+function averageValueAt(array, indices) {
+	if (!indices || indices.length === 0) return null;
+	const values = indices.map((i) => array[i]).filter((v) => v !== undefined);
+	if (values.length === 0) return null;
+	return values.reduce((sum, v) => sum + v, 0) / values.length;
+}
+
+function playSoundForStep(stepData) {
+	if (!isSoundEnabled()) return;
+	const algo = getSelectedAlgorithm();
+
+	if (stepData.swapping && stepData.swapping.length > 0) {
+		const value = averageValueAt(stepData.array, stepData.swapping);
+		if (value === null) return
+		const customUrl = algo.sound?.swap;
+		if (customUrl && isCustomSoundReady(customUrl)) {
+			playCustomSample(customUrl, value, currentMaxValue);
+		} else {
+			playSwapTone(value, currentMaxValue);
+		}
+	} else if (stepData.comparing && stepData.comparing.length > 0) {
+		const value = averageValueAt(stepData.array, stepData.comparing);
+		if (value === null) return;
+		const customUrl = algo.sound?.comparison;
+		if (customUrl && isCustomSoundReady(customUrl)) {
+			playCustomSample(customUrl, value, currentMaxValue);
+		} else {
+			playComparisonTone(value, currentMaxValue);
+		}
+	}
 }
 
 // --- algorithm selection palette/modal thingy idk what to call it ill just settle on palette does that make sense yeah i think so bro shut up ts is a comment ---
@@ -343,6 +389,7 @@ function getNextGeneratorStep() {
 	const result = generator.next();
 	if (result.done) {
 		resetGenerator();
+		playCompletionChime();
 		return null;
 	}
 	tallyStep(result.value);
@@ -353,6 +400,7 @@ function advanceOneStep() {
 	const stepData = getNextGeneratorStep();
 	if (!stepData) return false;
 	drawBars(ctx, canvas, stepData, currentMaxValue);
+	playSoundForStep(stepData);
 	return true;
 }
 
@@ -390,7 +438,10 @@ function runAnimationLoop() {
 		lastStep = stepData;
 	}
 
-	if (lastStep) drawBars(ctx, canvas, lastStep, currentMaxValue);
+	if (lastStep) {
+		drawBars(ctx, canvas, lastStep, currentMaxValue);
+		playSoundForStep(lastStep);
+	}
 	if (finished) return;
 
 	if (tickDelay > 0) {
@@ -561,8 +612,17 @@ playPauseBtn.addEventListener('click', togglePlayPause);
 stepBtn.addEventListener('click', handleStep);
 benchmarkBtn.addEventListener('click', handleBenchmark);
 codeBtn.addEventListener('click', handleToggleCode);
+soundBtn.addEventListener('click', handleSoundBtnClick);
 
 populateCommandPaletteList();
+
+// preload all custom sounds
+const customSoundUrls = new Set();
+algorithms.forEach((algo) => {
+	if (algo.sound) Object.values(algo.sound).forEach((url) => customSoundUrls.add(url));
+});
+preloadCustomSounds([...customSoundUrls]);
+
 algoPickerCurrentEl.textContent = getSelectedAlgorithm().name;
 updateComplexityLabel();
 updateDescription();
