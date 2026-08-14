@@ -6,6 +6,7 @@ const meta = {
     category: 'Comparison',
     complexity: 'O(n²)',
     description: "Bubble sort that alternates direction each pass, shrinking the unsorted window from both ends at once.",
+    file: import.meta.url,
 };
 
 /**

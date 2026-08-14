@@ -6,6 +6,7 @@ const meta = {
     category: 'Non-Comparison',
     complexity: 'O(n + k) avg, O(n²) worst',
     description: "Distributes values into several buckets by range, sorts each bucket individually, then concatenates them.",
+    file: import.meta.url,
 };
 
 /**

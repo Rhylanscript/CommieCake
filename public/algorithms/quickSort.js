@@ -6,6 +6,7 @@ const meta = {
     category: 'Divide & Conquer',
     complexity: 'O(n log n) avg',
     description: "Picks a pivot, partitions smaller values to one side and larger to the other, then recurses on each side.",
+    file: import.meta.url,
 };
 
 /**

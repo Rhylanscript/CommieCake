@@ -1,12 +1,13 @@
 // public/js/algorithms/tungSort.js
 
 const meta = {
-    id: 'tung',
-    name: 'Tung Sort',
+	id: 'tung',
+	name: 'Tung Sort',
 	category: 'Custom',
-    complexity: 'O(n log n) avg',
-    description: "Custom hybrid: dual pivot partitions into low/mid/high, recurses on each, and drops to insertion sort when small.",
+	complexity: 'O(n log n) avg',
+	description: "Custom hybrid: dual pivot partitions into low/mid/high, recurses on each, and drops to insertion sort when small.",
 	//sound: { swap: 'assets/sounds/tung.mp3' },
+	file: import.meta.url,
 };
 
 /**
@@ -101,3 +102,5 @@ function* insertionSweep(a, start, end) {
 }
 
 export default { meta, run: tungSort };
+
+// hello

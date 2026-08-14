@@ -6,6 +6,7 @@ const meta = {
     category: 'Comparison',
     complexity: 'O(n²)',
     description: "Like insertion sort but implemented as a single walking pointer. Step forward when the pair behind you is fine, step backward (after swapping) when it isnt.",
+    file: import.meta.url,
 };
 
 /**

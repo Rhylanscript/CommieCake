@@ -6,6 +6,7 @@ const meta = {
     category: 'Comparison',
     complexity: 'O(n²)',
     description: "Builds a sorted region one element at a time, shifting larger elements right to make room for each new one.",
+    file: import.meta.url,
 }
 
 /**

@@ -6,6 +6,7 @@ const meta = {
     category: 'Divide & Conquer',
     complexity: 'O(n log n) avg, O(n²) worst',
     description: "Inserts every value into a binary search tree, then reads it back out ascending via an in order traversal.",
+    file: import.meta.url,
 };
 
 /**

@@ -42,7 +42,12 @@ See [`public/algorithms/README.md`][algorithm] to see the exact creation process
 
 ## How it Works
 
-Every algorithm is a JavaScript [**generator function**][generatorfunc] (`function*` / `yield`). Instead of sorting the array and returning a final result, it pauses after every action (usually comparison or swap) and yields a snapshot in form of: `{ array, comparing, swapping, sortedIndices, pivot }`. The UI drives the animation by repeatedly calling `.next()` on whichever generator is selected and drawing whatever it yields. This is what makes Step, Play, Benchmark, and the live counters all work off the exact same underlying algorithm code as none of them are special cased per algorithm.
+Every algorithm is a JavaScript [**generator function**][generator] (`function*` / `yield`). Instead of sorting the array and returning a final result, it pauses after every action (usually comparison or swap) and yields a snapshot in form of: `{ array, comparing, swapping, sortedIndices, pivot }`. The UI drives the animation by repeatedly calling `.next()` on whichever generator is selected and drawing whatever it yields. This is what makes Step, Play, Benchmark, and the live counters all work off the exact same underlying algorithm code as none of them are special cased per algorithm.
+
+## Special Thanks
+
+Thanks to [@Eli-Zac][eli-zac] for helping me configure the cloudflare pages site and other technical things.<br>
+Thanks to [@mustangCAR][raghav] for helping with inspiration and making the site favicon.
 
 ## License
 
@@ -52,7 +57,14 @@ See the [license][license] for more information.
 
 [commiecake]: https://commiecake.pages.dev
 [liveserver]: https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer
-[generatorfunc]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function*
+[generator]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function*
+
+<!-- PEOPLE -->
+
+[eli-zac]: https://github.com/eli-zac
+[raghav]: https://github.com/mustangcar
+
+<!-- FILES -->
 
 [algorithm]: public/algorithms/README.md
 [license]: LICENSE

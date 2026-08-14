@@ -17,6 +17,7 @@ const meta = {
         swap: 'assets/sounds/your-swap.mp3',
         comparison: 'assets/sounds/your-comparison.mp3',
     },
+    file: import.meta.url,  // always include this so the code panel can find the source code
 }
 
 /**
@@ -74,6 +75,7 @@ const meta = {
     category: 'Comparison',
     complexity: 'O(n)',
     description: 'A single left to right pass, swapping adjacent out of order pairs.',
+    file: import.meta.url,
 };
 
 function* exampleSort(input) {

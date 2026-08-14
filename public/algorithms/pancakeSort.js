@@ -6,6 +6,7 @@ const meta = {
     category: 'Comparison',
     complexity: 'O(n²)',
     description: "Sorts using one move: flipping (reversing) the front of the array (like sorting pancakes with a spatula)",
+    file: import.meta.url,
 };
 
 /**

@@ -5,7 +5,8 @@ const meta = {
 	name: 'Radix Sort',
 	category: 'Non-Comparison',
 	complexity: 'O(d(n + k))',
-	description: 'Sorts by one digit at a time, least significant first, using counting sort as the subroutine for each pass.',
+	description: "Sorts by one digit at a time, least significant first, using counting sort as the subroutine for each pass.",
+    file: import.meta.url,
 };
 
 /**

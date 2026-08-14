@@ -67,6 +67,9 @@ const SPEED_MAX = 500;
 const MAX_STEPS_PER_TICK = 4000;
 const FRAME_BUDGET_MS = 8;
 
+// --- code source files ---
+const sourceFileCache = new Map();
+
 function getSelectedAlgorithm() {
 	return algorithms.find((a) => a.id === selectedAlgorithmId);
 }
@@ -286,9 +289,28 @@ function restoreVisualizerView() {
 
 // --- code panel ---
 
-function updateCodeContent() {
-	const source = getSelectedAlgorithm().run.toString();
-	codeContentEl.innerHTML = highlightJs(source);
+async function updateCodeContent() {
+	const algo = getSelectedAlgorithm();
+
+	if (sourceFileCache.has(algo.id)) {
+		codeContentEl.innerHTML = highlightJs(sourceFileCache.get(algo.id));
+		return;
+	}
+
+	codeContentEl.textContent = "Loading Source...";
+
+	try {
+		const response = await fetch(algo.file);
+		if (!response.ok) throw new Error(`HTTP ${response.status}`);
+		const fullSource = await response.text();
+		sourceFileCache.set(algo.id, fullSource);
+		codeContentEl.innerHTML = highlightJs(fullSource);
+	} catch (err) {
+		// i have no idea how this could be reached but ig just return 
+		// function only view like before??
+		console.error(`Failed to load full source for ${algo.id}:`, err);
+		codeContentEl.innerHTML = highlightJs(algo.run.toString());
+	}
 }
 
 function setCodePanelOpen(open) {

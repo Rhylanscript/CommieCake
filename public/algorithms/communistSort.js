@@ -6,6 +6,7 @@ const meta = {
     category: 'Miscellaneous',
 	complexity: 'O(n)',
 	description: "Replaces every value with the average. All values are equal, therefore sorted.",
+    file: import.meta.url,
 };
 
 /**

@@ -5,7 +5,8 @@ const meta = {
 	name: 'Counting Sort',
     category: 'Non-Comparison',
 	complexity: 'O(n + k)',
-	description: 'Tallies how many times each value occurs, then writes values back out in order (no comparisons)',
+	description: "Tallies how many times each value occurs, then writes values back out in order (no comparisons)",
+    file: import.meta.url,
 };
 
 /**

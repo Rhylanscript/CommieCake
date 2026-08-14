@@ -6,6 +6,7 @@ const meta = {
     category: 'Comparison',
     complexity: 'O(n²)',
     description: "Scans the unsorted region each pass to find the minimum, then swaps it into place. (one swap every pass)",
+    file: import.meta.url,
 };
 
 /**

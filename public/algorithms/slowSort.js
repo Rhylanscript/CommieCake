@@ -6,6 +6,7 @@ const meta = {
     category: 'Miscellaneous',
 	complexity: 'O(n^log n)',
 	description: "The evil twin of quicksort that uses the 'multiply and surrender' strategy: deliberately does more recursive work than necessary at every step.",
+    file: import.meta.url,
 };
 
 /**

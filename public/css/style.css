@@ -13,6 +13,10 @@
     --teal: #3ec9b0;
     --red: #e8483d;
     --purple: #c34fe0;
+    --lime: #09c609;
+    --red: #f44747;
+    --white: #fff;
+    --light-blue: #3adeff;
 }
 
 * {
@@ -311,6 +315,7 @@ canvas.no-grid {
     font-size: 0.8rem;
     line-height: 1.6;
     white-space: pre;
+    tab-size: 4;
 }
 
 #code-panel.hidden {
@@ -321,8 +326,32 @@ canvas.no-grid {
     color: var(--text-dim);
 }
 
-.tok-string {
+.tok-jsdoc-tag {
+    color: var(--red);
+}
+
+.tok-jsdoc-brace {
     color: var(--amber);
+}
+
+.tok-jsdoc-type {
+    color: var(--teal);
+}
+
+.tok-jsdoc-name {
+    color: var(--white);
+}
+
+.tok-string {
+    color: var(--lime);
+}
+
+.tok-number {
+    color: var(--amber);
+}
+
+.tok-function {
+    color: var(--light-blue);
 }
 
 .tok-keyword {

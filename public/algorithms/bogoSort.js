@@ -6,6 +6,7 @@ const meta = {
     category: 'Miscellaneous',
 	complexity: 'O((n+1)!) expected',
 	description: "Shuffles randomly and checks if it got lucky. Expected runtime is astronomically bad.",
+    file: import.meta.url,
 };
 
 /**
