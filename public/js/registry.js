@@ -29,4 +29,14 @@ const modules = [
     countingSort, tungSort, stalinSort, communistSort, slowSort, bogoSort,
 ];
 
-export const algorithms = modules.map(({ meta, run }) => ({ ...meta, run }));
+// list of algorithms - if a category is unspecified sort it into 'Other'
+export const algorithms = modules.map(({ meta, run }) => ({ 
+    ...meta,
+    category: meta.category ?? 'Other',
+    run,
+}));
+
+// order that categories appear in the command palette
+export const CATEGORY_ORDER = [
+    'Comparison', 'Divide & Conquer', 'Non-Comparison', 'Miscellaneous',
+];

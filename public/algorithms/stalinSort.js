@@ -3,6 +3,7 @@
 const meta = {
 	id: 'stalin',
 	name: 'Stalin Sort',
+    category: 'Miscellaneous',
 	complexity: 'O(n) with minor casualties',
 	description: 'Deletes any element smaller than the last one kept. What remains is sorted.',
 };

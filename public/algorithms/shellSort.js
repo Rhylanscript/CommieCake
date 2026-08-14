@@ -3,6 +3,7 @@
 const meta = {
     id: 'shell',
     name: 'Shell Sort',
+    category: 'Comparison',
     complexity: 'O(n log² n) approx',
     description: "Similar to insertion sort but compares far apart elements first using a shrinking gap, so big moves happen early.",
 };

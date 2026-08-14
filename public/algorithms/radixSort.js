@@ -3,6 +3,7 @@
 const meta = {
 	id: 'radix',
 	name: 'Radix Sort',
+	category: 'Non-Comparison',
 	complexity: 'O(d(n + k))',
 	description: 'Sorts by one digit at a time, least significant first, using counting sort as the subroutine for each pass.',
 };

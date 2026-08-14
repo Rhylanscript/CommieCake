@@ -3,6 +3,7 @@
 const meta = {
     id: 'tung',
     name: 'Tung Sort',
+	category: 'Custom',
     complexity: 'O(n log n) avg',
     description: "Custom hybrid: dual pivot partitions into low/mid/high, recurses on each, and drops to insertion sort when small.",
 	//sound: { swap: 'assets/sounds/tung.mp3' },

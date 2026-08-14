@@ -3,6 +3,7 @@
 const meta = {
     id: 'bubble',
     name: 'Bubble Sort',
+    category: 'Comparison',
     complexity: 'O(n²)',
     description: "Repeatedly swaps adjacent out of order elements, letting the largest values 'bubble' to the end each pass."
 };

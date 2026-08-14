@@ -3,6 +3,7 @@
 const meta = {
     id: 'merge',
     name: 'Merge Sort',
+    category: 'Divide & Conquer',
     complexity: 'O(n log n)',
     description: "Recursively splits array in half, sorts each half, then merges the two sorted halves back together.",
 };

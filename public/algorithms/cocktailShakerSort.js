@@ -3,6 +3,7 @@
 const meta = {
     id: 'cocktail',
     name: 'Cocktail Shaker Sort',
+    category: 'Comparison',
     complexity: 'O(n²)',
     description: "Bubble sort that alternates direction each pass, shrinking the unsorted window from both ends at once.",
 };

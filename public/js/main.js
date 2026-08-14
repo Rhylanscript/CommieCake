@@ -2,7 +2,7 @@
 
 import { drawBars, drawBenchmarkChart, drawBenchmarkLoadingMessage } from './renderer.js';
 import { highlightJs } from './codeHighlight.js';
-import { algorithms } from './registry.js';
+import { algorithms, CATEGORY_ORDER } from './registry.js';
 import { setSoundEnabled, isSoundEnabled, playComparisonTone, playSwapTone, playCompletionChime, isCustomSoundReady, playCustomSample, preloadCustomSounds } from './sound.js';
 
 const canvas = document.getElementById('canvas');
@@ -132,9 +132,21 @@ function populateCommandPaletteList() {
 		grouped.get(algo.category).push(algo);
 	});
 
+	// sort category keys by their pos in CATEGORY_ORDER
+	// categories not listed there fallback to infinity so they sort after
+	// every listed category but relative to each other unlisted categories
+	// keep the order they were encountered in
+	const orderedCategories = [...grouped.keys()].sort((a, b) => {
+		const rankA = CATEGORY_ORDER.indexOf(a) === -1 ? Infinity : CATEGORY_ORDER.indexOf(a);
+		const rankB = CATEGORY_ORDER.indexOf(b) === -1 ? Infinity : CATEGORY_ORDER.indexOf(b);
+		return rankA - rankB;
+	});
+
 	commandPaletteListEl.innerHTML = '';
 
-	grouped.forEach((algosInGroup, category) => {
+	orderedCategories.forEach((category) => {
+		const algosInGroup = grouped.get(category);
+
 		const groupLabel = document.createElement('p');
 		groupLabel.className = 'algo-picker-group-label';
 		groupLabel.textContent = category;

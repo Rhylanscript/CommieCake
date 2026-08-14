@@ -10,6 +10,7 @@ Each algorithm lives in its own file in `public/algorithms` and follows the same
 const meta = {
     id: 'yoursort',         // unique lowercase identifier used only internally
     name: 'Your Sort',      // shown in the picker and code panel
+    category: 'Comparison', // the ribbon the sort will be grouped under
     complexity: 'O(1)',     // shown as a stat when this algorithm is selected
     description: 'One or two sentences explaining how it works, shown in sidebar and info popup.',
     sound: {                // optional - see "custom sounds" below
@@ -70,6 +71,7 @@ A few rules that matter more than they look like they would:
 const meta = {
     id: 'example',
     name: 'Example Sort',
+    category: 'Comparison',
     complexity: 'O(n)',
     description: 'A single left to right pass, swapping adjacent out of order pairs.',
 };

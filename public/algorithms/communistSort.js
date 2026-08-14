@@ -3,6 +3,7 @@
 const meta = {
 	id: 'communist',
 	name: 'Communist Sort',
+    category: 'Miscellaneous',
 	complexity: 'O(n)',
 	description: "Replaces every value with the average. All values are equal, therefore sorted.",
 };
