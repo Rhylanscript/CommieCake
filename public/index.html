@@ -6,6 +6,7 @@
         <title>CommieCake | Sorting Visualiser</title>
         <link rel="stylesheet" href="css/style.css" />
         <link rel="stylesheet" href="css/important.css" />
+        <link rel="icon" href="commiecake.ico" />
     </head>
     <body>
         <div id="app">
@@ -111,6 +112,14 @@
                     placeholder="Search Algorithms..."
                     autocomplete="off"
                 />
+                <div class="command-palette-toolbar">
+                    <select id="category-filter-select" class="palette-select" aria-label="Filter by Category"></select>
+                    <select id="sort-select" class="palette-select" aria-label="Sort Order">
+                        <option value="category">Grouped</option>
+                        <option value="name-asc">A-Z</option>
+                        <option value="name-dsc">Z-A</option>
+                    </select>
+                </div>
                 <div id="command-palette-list" class="command-palette-list" role="listbox" aria-label="Algorithm"></div>
             </div>
         </div>

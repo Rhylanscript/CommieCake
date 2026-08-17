@@ -13,6 +13,8 @@ const algoPickerCurrentEl = document.getElementById('algo-picker-current');
 const commandPaletteBackdropEl = document.getElementById('command-palette-backdrop');
 const commandPaletteSearchEl = document.getElementById('command-palette-search');
 const commandPaletteListEl = document.getElementById('command-palette-list');
+const categoryFilterSelectEl = document.getElementById('category-filter-select');
+const sortSelectEl = document.getElementById('sort-select');
 
 const algorithmDescEl = document.getElementById('algorithm-description');
 const infoBtn = document.getElementById('info-btn');
@@ -49,6 +51,10 @@ let isCodePanelOpen = false;
 let isCommandPaletteOpen = false;
 let activeOptionIndex = 0;
 let selectedAlgorithmId = algorithms[0].id;
+
+// --- command palette filter/sort state ---
+let activeCategoryFilter = 'All';
+let sortMode = 'category'; 			// 'category' | 'name-asc' | 'name-dsc'
 
 // --- timer state ---
 let accumulatedElapsedMs = 0;
@@ -107,7 +113,7 @@ function playSoundForStep(stepData) {
 
 	if (stepData.swapping && stepData.swapping.length > 0) {
 		const value = averageValueAt(stepData.array, stepData.swapping);
-		if (value === null) return
+		if (value === null) return;
 		const customUrl = algo.sound?.swap;
 		if (customUrl && isCustomSoundReady(customUrl)) {
 			playCustomSample(customUrl, value, currentMaxValue);
@@ -126,58 +132,108 @@ function playSoundForStep(stepData) {
 	}
 }
 
-// --- algorithm selection palette/modal thingy idk what to call it ill just settle on palette does that make sense yeah i think so bro shut up ts is a comment ---
+// --- command palette ---
 
-function populateCommandPaletteList() {
-	const grouped = new Map();
-	algorithms.forEach((algo) => {
-		if (!grouped.has(algo.category)) grouped.set(algo.category, []);
-		grouped.get(algo.category).push(algo);
+function populateCategoryFilterSelect() {
+	const presentCategories = new Set(algorithms.map((a) => a.category));
+	const orderedPresent = [
+		...CATEGORY_ORDER.filter((c) => presentCategories.has(c)),
+		...[...presentCategories].filter((c) => !CATEGORY_ORDER.includes(c)),
+	];
+
+	categoryFilterSelectEl.innerHTML = '';
+	['All', ...orderedPresent].forEach((category) => {
+		const option = document.createElement('option');
+		option.value = category;
+		option.textContent = category;
+		categoryFilterSelectEl.appendChild(option);
 	});
+	categoryFilterSelectEl.value = activeCategoryFilter;
+}
 
-	// sort category keys by their pos in CATEGORY_ORDER
-	// categories not listed there fallback to infinity so they sort after
-	// every listed category but relative to each other unlisted categories
-	// keep the order they were encountered in
-	const orderedCategories = [...grouped.keys()].sort((a, b) => {
-		const rankA = CATEGORY_ORDER.indexOf(a) === -1 ? Infinity : CATEGORY_ORDER.indexOf(a);
-		const rankB = CATEGORY_ORDER.indexOf(b) === -1 ? Infinity : CATEGORY_ORDER.indexOf(b);
-		return rankA - rankB;
+function handleCategoryFilterChange() {
+	activeCategoryFilter = categoryFilterSelectEl.value;
+	renderCommandPaletteList(commandPaletteSearchEl.value);
+}
+
+function handleSortSelectChange() {
+	sortMode = sortSelectEl.value;
+	renderCommandPaletteList(commandPaletteSearchEl.value);
+}
+
+function createOptionElement(algo) {
+	const option = document.createElement('button');
+	option.type = 'button';
+	option.className = 'algo-picker-option';
+	option.dataset.id = algo.id;
+	option.setAttribute('role', 'option');
+	option.innerHTML = `<span>${algo.name}</span><span class="algo-picker-option-complexity">${algo.complexity}</span>`;
+	option.addEventListener('click', () => handleAlgorithmPick(algo.id));
+	option.addEventListener('mouseenter', () => {
+		const visible = getVisibleOptions();
+		const hoveredIndex = visible.indexOf(option);
+		if (hoveredIndex !== -1) setActiveIndex(hoveredIndex, visible);
+	});
+	return option;
+}
+
+function renderCommandPaletteList(query) {
+	const normalizedQuery = query.trim().toLowerCase();
+
+	const filtered = algorithms.filter((algo) => {
+		const matchesQuery = algo.name.toLowerCase().includes(normalizedQuery);
+		const matchesCategory = activeCategoryFilter === 'All' || algo.category === activeCategoryFilter;
+		return matchesQuery && matchesCategory;
 	});
 
 	commandPaletteListEl.innerHTML = '';
 
-	orderedCategories.forEach((category) => {
-		const algosInGroup = grouped.get(category);
+	if (filtered.length === 0) {
+		const empty = document.createElement('p');
+		empty.className = 'command-palette-empty';
+		empty.textContent = 'No algorithms match.';
+		commandPaletteListEl.appendChild(empty);
+		setActiveIndex(0, []);
+		return;
+	}
 
-		const groupLabel = document.createElement('p');
-		groupLabel.className = 'algo-picker-group-label';
-		groupLabel.textContent = category;
-		commandPaletteListEl.appendChild(groupLabel);
-
-		algosInGroup.forEach((algo) => {
-			const option = document.createElement('button');
-			option.type = 'button';
-			option.className = 'algo-picker-option';
-			option.dataset.id = algo.id;
-			option.dataset.name = algo.name.toLowerCase();
-			option.setAttribute('role', 'option');
-			option.innerHTML = `<span>${algo.name}</span><span class="algo-picker-option-complexity">${algo.complexity}</span>`;
-			option.addEventListener('click', () => handleAlgorithmPick(algo.id));
-			option.addEventListener('mouseenter', () => {
-				const visible = getVisibleOptions();
-				const hoveredIndex = visible.indexOf(option);
-				if (hoveredIndex !== -1) setActiveIndex(hoveredIndex, visible);
-			});
-			commandPaletteListEl.appendChild(option);
+	if (sortMode === 'name-asc' || sortMode === 'name-dsc') {
+		const direction = sortMode === 'name-asc' ? 1 : -1;
+		[...filtered]
+			.sort((a, b) => direction * a.name.localeCompare(b.name))
+			.forEach((algo) => commandPaletteListEl.appendChild(createOptionElement(algo)));
+	} else {
+		const grouped = new Map();
+		filtered.forEach((algo) => {
+			if (!grouped.has(algo.category)) grouped.set(algo.category, []);
+			grouped.get(algo.category).push(algo);
 		});
-	});
+
+		// sort category keys by their pos in CATEGORY_ORDER
+		// categories not listed there fallback to infinity so they sort after
+		// every listed category but relative to each other unlisted categories
+		// keep the order they were encountered in
+		const orderedCategories = [...grouped.keys()].sort((a, b) => {
+			const rankA = CATEGORY_ORDER.indexOf(a) === -1 ? Infinity : CATEGORY_ORDER.indexOf(a);
+			const rankB = CATEGORY_ORDER.indexOf(b) === -1 ? Infinity : CATEGORY_ORDER.indexOf(b);
+			return rankA - rankB;
+		});
+
+		orderedCategories.forEach((category) => {
+			const groupLabel = document.createElement('p');
+			groupLabel.className = 'algo-picker-group-label';
+			groupLabel.textContent = category;
+			commandPaletteListEl.appendChild(groupLabel);
+
+			grouped.get(category).forEach((algo) => commandPaletteListEl.appendChild(createOptionElement(algo)));
+		});
+	}
+
+	setActiveIndex(0, getVisibleOptions());
 }
 
 function getVisibleOptions() {
-	return Array.from(commandPaletteListEl.querySelectorAll('.algo-picker-option')).filter(
-		(el) => el.style.display !== 'none'
-	);
+	return Array.from(commandPaletteListEl.querySelectorAll('.algo-picker-option'));
 }
 
 function setActiveIndex(index, visible) {
@@ -199,24 +255,8 @@ function selectActiveOption() {
 	if (el) handleAlgorithmPick(el.dataset.id);
 }
 
-function filterCommandPaletteOptions(query) {
-	const normalizedQuery = query.trim().toLowerCase();
-
-	commandPaletteListEl.querySelectorAll('.algo-picker-option').forEach((optionEl) => {
-		optionEl.style.display = optionEl.dataset.name.includes(normalizedQuery) ? '' : 'none';
-	});
-
-	commandPaletteListEl.querySelectorAll('.algo-picker-group-label').forEach((labelEl) => {
-		let node = labelEl.nextElementSibling;
-		let groupHasVisibleOption = false;
-		while (node && !node.classList.contains('algo-picker-group-label')) {
-			if (node.style.display !== 'none') groupHasVisibleOption = true;
-			node = node.nextElementSibling;
-		}
-		labelEl.style.display = groupHasVisibleOption ? '' : 'none';
-	});
-
-	setActiveIndex(0, getVisibleOptions());
+function handleCommandPaletteSearchInput() {
+	renderCommandPaletteList(commandPaletteSearchEl.value);
 }
 
 function openCommandPalette() {
@@ -224,7 +264,7 @@ function openCommandPalette() {
 	commandPaletteBackdropEl.classList.remove('hidden');
 	algoPickerToggleEl.setAttribute('aria-expanded', 'true');
 	commandPaletteSearchEl.value = '';
-	filterCommandPaletteOptions('');
+	renderCommandPaletteList('');
 	commandPaletteSearchEl.focus();
 }
 
@@ -232,10 +272,6 @@ function closeCommandPalette() {
 	isCommandPaletteOpen = false;
 	commandPaletteBackdropEl.classList.add('hidden');
 	algoPickerToggleEl.setAttribute('aria-expanded', 'false');
-}
-
-function handleCommandPaletteSearchInput() {
-	filterCommandPaletteOptions(commandPaletteSearchEl.value);
 }
 
 function handleBackdropClick(e) {
@@ -640,6 +676,8 @@ infoBtn.addEventListener('click', handleInfoBtnClick);
 algoPickerToggleEl.addEventListener('click', openCommandPalette);
 commandPaletteSearchEl.addEventListener('input', handleCommandPaletteSearchInput);
 commandPaletteBackdropEl.addEventListener('click', handleBackdropClick);
+categoryFilterSelectEl.addEventListener('change', handleCategoryFilterChange);
+sortSelectEl.addEventListener('change', handleSortSelectChange);
 
 newArrayBtn.addEventListener('click', handleNewArray);
 playPauseBtn.addEventListener('click', togglePlayPause);
@@ -648,7 +686,7 @@ benchmarkBtn.addEventListener('click', handleBenchmark);
 codeBtn.addEventListener('click', handleToggleCode);
 soundBtn.addEventListener('click', handleSoundBtnClick);
 
-populateCommandPaletteList();
+populateCategoryFilterSelect();
 
 // preload all custom sounds
 const customSoundUrls = new Set();

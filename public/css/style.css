@@ -536,6 +536,44 @@ canvas.no-grid {
     color: var(--text-dim);
 }
 
+.command-palette-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.chip:hover,
+.chip:focus-visible {
+    border-color: var(--teal);
+    color: var(--teal);
+    outline: none;
+}
+
+.chip.active {
+    background: var(--teal);
+    border-color: var(--teal);
+    color: var(--bg);
+    font-weight: 700;
+}
+
+.command-palette-empty {
+    padding: 16px 8px;
+    text-align: center;
+    color: var(--text-dim);
+    font-size: 0.8rem;
+}
+
+.command-palette-toolbar {
+    display: flex;
+    gap: 8px;
+}
+
+.palette-select {
+    flex: 1;
+    font-size: 0.78rem;
+    padding: 6px 8px;
+}
+
 .algo-picker-group-label:first-child {
     margin-top: 0;
 }
