@@ -1,0 +1,23 @@
+# line endings
+* text=auto
+
+# treat as text
+*.html text
+*.css text
+*.js text
+*.json text
+*.md text
+*.xml text
+*.txt text
+*.svg text
+
+#  binary files
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.webp binary
+*.mp3 binary
+*.wav binary
+*.ogg binary

@@ -662,6 +662,75 @@ canvas.no-grid {
     pointer-events: none !important;
 }
 
+/* ---------- 404 page stuff ---------- */
+
+.error-page {
+    min-height: 100vh;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 32px;
+    background: var(--bg);
+}
+
+.error-panel {
+    width: min(480px, 100%);
+    box-sizing: border-box;
+    padding: 36px;
+    text-align: center;
+    background: var(--panel);
+    border: 1px solid var(--panel-border);
+    border-radius: 8px;
+}
+
+.error-code {
+    margin: 0 0 4px;
+    color: var(--amber);
+    font-family: 'JetBrains Mono', Consolas, Menlo, monospace;
+    font-size: clamp(4rem, 12vw, 7rem);
+    font-weight: 700;
+    line-height: 1;
+}
+
+.error-panel h1 {
+    margin: 12px 0 10px;
+    color: var(--text);
+    font-size: 1.4rem;
+}
+
+.error-message {
+    max-width: 360px;
+    margin: 0 auto 24px;
+    color: var(--text-dim);
+    font-size: 0.8rem;
+    line-height: 1.6;
+}
+
+.error-home-button {
+    display: inline-block;
+    padding: 10px 14px;
+    border: 1px solid var(--teal);
+    border-radius: 4px;
+    background: var(--teal);
+    color: var(--bg);
+    font: inherit;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+.error-home-button:hover {
+    background: transparent;
+    color: var(--teal);
+}
+
+.error-home-button:focus-visible {
+    outline: 2px solid var(--teal);
+    outline-offset: 2px;
+}
+
 /* ------------- media queries + responsive layout -------------- */
 
 @media (prefers-reduced-motion: reduce) {
@@ -719,5 +788,13 @@ canvas.no-grid {
 
     .command-palette {
         padding: 10px;
+    }
+
+    .error-page {
+        padding: 20px 16px;
+    }
+
+    .error-panel {
+        padding: 28px 20px;
     }
 }

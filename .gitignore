@@ -4,3 +4,7 @@ PRIVATE.md
 # slop
 Thumbs.db
 .DS_STORE
+
+# temp files
+*.tmp
+*.temp
