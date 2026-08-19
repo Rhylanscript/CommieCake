@@ -147,7 +147,7 @@ const meta = {
 1. Select it in the picker, click **Step** repeatedly, confirm each snapshot looks correct and the array visibly converges toward sorted
 2. Click **Start** at a slow-medium speed and watch it run to completion.
 3. Open **Show Code** and confirm your source renders and highlights correctly.
-4. Run **Benchmark**, if your algorithm can take a very long time at large array sizes (like Bogo Sort or Slowsort), add its `id` to the `NEVER_FINISHES_AT_SCALE` array in `main.js`'s `runBenchmark()` so Benchmark mode skips it instead of hanging the browser.
+4. Run **Benchmark**, if your algorithm can take a very long time at large array sizes (like Bogo Sort or Slowsort), add its `id` to the `DONT_PLEASE_NO` array in `main.js`'s `runBenchmark()` so Benchmark mode skips it instead of hanging the browser.
 
 Happy coding[!][whatsthis]
 

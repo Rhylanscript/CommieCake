@@ -1,0 +1,60 @@
+/* --- code panel --- */
+
+#code-panel {
+    position: absolute;
+    inset: 0;
+    margin: 0;
+    overflow: auto;
+    background: var(--bg);
+    border: 1px solid var(--panel-border);
+    border-radius: 6px;
+    padding: 18px 22px;
+    font-family: 'JetBrains Mono', Consolas, Menlo, monospace;
+    font-size: 0.8rem;
+    line-height: 1.6;
+    white-space: pre;
+    tab-size: 4;
+}
+
+#code-panel.hidden {
+    display: none;
+}
+
+/* --- tokens --- */
+
+.tok-comment {
+    color: var(--text-dim);
+}
+
+.tok-jsdoc-tag {
+    color: var(--red);
+}
+
+.tok-jsdoc-brace {
+    color: var(--amber);
+}
+
+.tok-jsdoc-type {
+    color: var(--teal);
+}
+
+.tok-jsdoc-name {
+    color: var(--white);
+}
+
+.tok-string {
+    color: var(--lime);
+}
+
+.tok-number {
+    color: var(--amber);
+}
+
+.tok-function {
+    color: var(--light-blue);
+}
+
+.tok-keyword {
+    color: var(--purple);
+    font-weight: 700;
+}

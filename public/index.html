@@ -2,11 +2,16 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="viewport" content="width=device-width, initial-scale=0.1" />
         <title>CommieCake | Sorting Visualiser</title>
-        <link rel="stylesheet" href="css/style.css" />
-        <link rel="stylesheet" href="css/important.css" />
         <link rel="icon" href="assets/icons/commiecake.ico" />
+        <link rel="stylesheet" href="css/base.css">
+        <link rel="stylesheet" href="css/sidebar.css">
+        <link rel="stylesheet" href="css/canvas.css">
+        <link rel="stylesheet" href="css/command-palette.css">
+        <link rel="stylesheet" href="css/code-panel.css">
+        <link rel="stylesheet" href="css/icon-btn.css">
+        <link rel="stylesheet" href="css/important.css">
     </head>
     <body>
         <div id="app">
@@ -29,7 +34,7 @@
                         <span class="algo-picker-hint">Select</span>
                     </button>
 
-                    <div class="description-row">
+                    <div class="description-row" id="description-row">
                         <p id="algorithm-description" class="algorithm-description"></p>
                         <button 
                             id="info-btn" 
@@ -41,6 +46,24 @@
                         >i</button>
                         <div id="description-popup" class="description-popup" role="tooltip"></div>
                     </div>
+
+                    <div class="control-group hidden" id="algo-b-control-group">
+                        <label id="algo-picker-label-b" for="algo-picker-toggle-b">Algorithm B</label>
+                        <button
+                            type="button"
+                            id="algo-picker-toggle-b"
+                            class="algo-picker-toggle"
+                            aria-haspopup="dialog"
+                            aria-expanded="false"
+                        >
+                            <span id="algo-picker-current-b"></span>
+                            <span class="algo-picker-hint">Select</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <button type="button" id="race-toggle-btn" class="race-toggle-btn">Race Mode: Off</button>
                 </div>
 
                 <div class="control-group">
@@ -66,39 +89,70 @@
                     <button id="benchmark-btn">Benchmark</button>
                     <button id="code-btn">Show Code</button>
                 </div>
-
-                <p class="shortcuts-hint">space: play/pause ➞: step</p>
             </aside>
 
             <main>
-                <div id="stats-bar">
-                    <div class="stat">
-                        <span class="stat-label">Time</span>
-                        <span id="timer-value" class="stat-value stat-value-timer">0.00s</span>
+                <button type="button" id="sound-btn" class="icon-btn" aria-pressed="false" aria-label="Toggle Sound">
+                    <img id="sound-icon" src="assets/images/sound-off.svg" alt="" width="24" height="24" />
+                </button>
+
+                <p id="race-banner" class="race-banner"></p>
+
+                <div id="race-tracks" class="race-tracks">
+                    <div class="track-row" id="track-row-a">
+                        <div class="track-stats">
+                            <div class="stat">
+                                <span class="stat-label">Time</span>
+                                <span id="timer-value" class="stat-value stat-value-timer">0.00s</span>
+                            </div>
+                            <div class="stat">
+                                <span class="stat-label">Complexity</span>
+                                <span id="complexity-value" class="stat-value stat-value-complexity">-</span>
+                            </div>
+                            <div class="stat">
+                                <span class="stat-label">Comparisons</span>
+                                <span id="comparisons-value" class="stat-value stat-value-comparisons">0</span>
+                            </div>
+                            <div class="stat">
+                                <span class="stat-label">Swaps</span>
+                                <span id="swaps-value" class="stat-value stat-value-swaps">0</span>
+                            </div>
+                        </div>
+
+                        <div id="canvas-wrapper" class="canvas-wrapper">
+                            <span id="canvas-label-a" class="canvas-label"></span>
+                            <span id="winner-badge-a" class="winner-badge">Winner!</span>
+                            <canvas id="canvas" width="900" height="500"></canvas>
+                            <pre id="code-panel" class="hidden"><code id="code-content"></code></pre>
+                        </div>
                     </div>
-                    <div class="stat">
-                        <span class="stat-label">Complexity</span>
-                        <span id="complexity-value" class="stat-value stat-value-complexity">-</span>
+
+                    <div class="track-row hidden" id="track-row-b">
+                        <div class="track-stats">
+                            <div class="stat">
+                                <span class="stat-label">Time</span>
+                                <span id="timer-value-b" class="stat-value stat-value-timer">0.00s</span>
+                            </div>
+                            <div class="stat">
+                                <span class="stat-label">Complexity</span>
+                                <span id="complexity-value-b" class="stat-value stat-value-complexity">-</span>
+                            </div>
+                            <div class="stat">
+                                <span class="stat-label">Comparisons</span>
+                                <span id="comparisons-value-b" class="stat-value stat-value-comparisons">0</span>
+                            </div>
+                            <div class="stat">
+                                <span class="stat-label">Swaps</span>
+                                <span id="swaps-value-b" class="stat-value stat-value-swaps">0</span>
+                            </div>
+                        </div>
+
+                        <div id="canvas-wrapper-b" class="canvas-wrapper">
+                            <span id="canvas-label-b" class="canvas-label"></span>
+                            <span id="winner-badge-b" class="winner-badge">Winner!</span>
+                            <canvas id="canvas-b" width="900" height="500"></canvas>
+                        </div>
                     </div>
-                    <div class="stat">
-                        <span class="stat-label">Comparisons</span>
-                        <span id="comparisons-value" class="stat-value stat-value-comparisons">0</span>
-                    </div>
-                    <div class="stat">
-                        <span class="stat-label">Swaps</span>
-                        <span id="swaps-value" class="stat-value stat-value-swaps">0</span>
-                    </div>
-                    <button 
-                        type="button"
-                        id="sound-btn"
-                        class="icon-btn"
-                        aria-pressed="false"
-                        aria-label="Toggle Sound"
-                    ><img id="sound-icon" src="assets/images/sound-off.svg" alt="" width="24" height="24" /></button>
-                </div>
-                <div id="canvas-wrapper">
-                    <canvas id="canvas" width="900" height="500"></canvas>
-                    <pre id="code-panel" class="hidden"><code id="code-content"></code></pre>
                 </div>
             </main>
         </div>
