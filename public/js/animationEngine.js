@@ -9,6 +9,7 @@ import { isCodePanelOpen, setCodePanelOpen, refreshCodePanelIfOpen, setCodePanel
 import { showBenchmarkLoading, runBenchmark } from './benchmark.js';
 import { updateDescription } from './descriptionPopup.js';
 import { playSoundForStep } from './soundBridge.js';
+import { closeAllStatsPopups } from './statsPopup.js';
 
 // --- get the elements ---
 const appEl = document.getElementById('app');
@@ -236,6 +237,7 @@ function handleAlgorithmChangeA() {
 	updateTrackLabels();
 	renderCurrentArray();
 	refreshCodePanelIfOpen();
+	closeAllStatsPopups();
 }
 
 function handleAlgorithmChangeB() {
@@ -245,6 +247,7 @@ function handleAlgorithmChangeB() {
 	updateStatLabels();
 	updateTrackLabels();
 	renderCurrentArray();
+	closeAllStatsPopups();
 }
 
 function getNextTrackStep(slot) {
@@ -402,6 +405,7 @@ function toggleRaceMode() {
 	updateStatLabels();
 	updateTrackLabels();
 	renderCurrentArray();
+	closeAllStatsPopups();
 }
 
 // --- internals: benchmark mode ---

@@ -125,7 +125,7 @@ function createOptionElement(algo) {
 	option.className = 'algo-picker-option';
 	option.dataset.id = algo.id;
 	option.setAttribute('role', 'option');
-	option.innerHTML = `<span>${algo.name}</span><span class="algo-picker-option-complexity">${algo.complexity}</span>`;
+	option.innerHTML = `<span>${algo.name}</span><span class="algo-picker-option-complexity">${algo.time}</span>`;
 	option.addEventListener('click', () => handleAlgorithmPick(algo.id));
 	option.addEventListener('mouseenter', () => {
 		const visible = getVisibleOptions();

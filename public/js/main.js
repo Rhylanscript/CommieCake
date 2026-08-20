@@ -5,6 +5,7 @@ import { initCodePanel } from "./codePanel.js";
 import { closeCommandPalette, initCommandPalette, isPaletteOpen, moveActiveIndex, selectActiveOption } from "./commandPalette.js";
 import { initDescriptionPopup, updateDescription } from "./descriptionPopup.js";
 import { initSoundBridge } from "./soundBridge.js";
+import { initStatsPopup } from "./statsPopup.js";
 import { initTimer } from "./timer.js";
 
 // keyboard shortcuts
@@ -47,6 +48,7 @@ function handleKeydown(e) {
 
 document.addEventListener('keydown', handleKeydown);
 
+initStatsPopup();
 initAnimationEngine();
 initCommandPalette({ onSelect: handleAlgorithmSelect });
 initDescriptionPopup({ getSelectedAlgorithm });
