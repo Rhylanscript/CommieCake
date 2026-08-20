@@ -18,6 +18,8 @@ const ctx = canvas.getContext('2d');
 const canvasB = document.getElementById('canvas-b');
 const ctxB = canvasB.getContext('2d');
 
+const algoPickerLabelEl = document.getElementById('algo-picker-label');
+
 const algoBControlGroupEl = document.getElementById('algo-b-control-group');
 const descriptionRowEl = document.getElementById('description-row');
 
@@ -361,6 +363,7 @@ function runAnimationLoop() {
 function toggleRaceMode() {
 	isRaceMode = !isRaceMode;
 
+	algoPickerLabelEl.textContent = isRaceMode ? 'Algorithm A' : 'Algorithm';
 	raceToggleBtn.textContent = isRaceMode ? 'Race Mode: On' : 'Race Mode: Off';
 	raceToggleBtn.classList.toggle('active', isRaceMode);
 	descriptionRowEl.classList.toggle('hidden', isRaceMode);

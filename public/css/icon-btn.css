@@ -40,3 +40,9 @@
 #sound-icon {
     pointer-events: none !important;
 }
+
+@media (max-width: 860px) {
+    .icon-btn {
+        position: absolute;
+    }
+}

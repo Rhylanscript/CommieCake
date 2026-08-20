@@ -1,8 +1,8 @@
 // public/js/main.js
 
-import { getSelectedAlgorithm, getTrackStatus, getCurrentMaxValue, handleAlgorithmSelect, handleNewArray, initAnimationEngine, isRaceModeOn, togglePlayPause, updateComplexityLabels, updateTrackLabels } from "./animationEngine.js";
+import { getSelectedAlgorithm, getTrackStatus, getCurrentMaxValue, handleAlgorithmSelect, handleNewArray, initAnimationEngine, isRaceModeOn, togglePlayPause, updateComplexityLabels, updateTrackLabels, handleStep } from "./animationEngine.js";
 import { initCodePanel } from "./codePanel.js";
-import { closeCommandPalette, initCommandPalette, isPaletteOpen, moveActiveIndex } from "./commandPalette.js";
+import { closeCommandPalette, initCommandPalette, isPaletteOpen, moveActiveIndex, selectActiveOption } from "./commandPalette.js";
 import { initDescriptionPopup, updateDescription } from "./descriptionPopup.js";
 import { initSoundBridge } from "./soundBridge.js";
 import { initTimer } from "./timer.js";

@@ -103,17 +103,25 @@ canvas.no-grid {
 .canvas-wrapper {
     position: relative;
     flex: 1;
+    min-width: 0;
     min-height: 0;
     display: flex;
-    align-items: center;
-    justify-content: center;
+    align-items: stretch;
+    justify-content: flex-start;
+}
+
+.canvas-frame {
+    position: relative;
+    min-width: 0;
+    max-width: 100%;
+    line-height: 0;
 }
 
 .canvas-wrapper canvas {
+    display: block;
     width: auto;
-    height: auto;
+    height: 100%;
     max-width: 100%;
-    max-height: 100%;
     object-fit: contain;
     margin: 0;
 }
@@ -131,6 +139,7 @@ canvas.no-grid {
     color: var(--teal);
     font-size: 0.68rem;
     font-weight: 700;
+    line-height: 1.4;
     padding: 3px 8px;
     border-radius: 4px;
     border: 1px solid var(--panel-border);
@@ -167,6 +176,7 @@ canvas.no-grid {
     color: var(--amber);
     font-size: 0.72rem;
     font-weight: 700;
+    line-height: 1.4;
     padding: 4px 10px;
     border-radius: 4px;
     border: 1px solid var(--amber);
@@ -217,17 +227,7 @@ canvas.no-grid {
 }
 
 #app.racing .canvas-wrapper {
-    align-items: flex-start;
-    justify-content: flex-start;
-}
-
-#app.racing .canvas-wrapper canvas {
-    width: auto;
-    height: auto;
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain;
-    margin: 0;
+    justify-content: flex-end;
 }
 
 #app.racing .canvas-label {
@@ -258,7 +258,15 @@ canvas.no-grid {
     .track-stats,
     #app.racing .track-stats {
         flex-direction: row;
+        flex-wrap: wrap;
         min-width: 0;
+        width: 100%;
+    }
+
+    .stat,
+    #app.racing .stat {
+        min-width: 0;
+        flex: 1 1 auto;
     }
 
     #app.racing .stat {
@@ -268,6 +276,11 @@ canvas.no-grid {
     .canvas-wrapper,
     #app.racing .canvas-wrapper {
         flex: none;
+    }
+
+    .canvas-frame {
+        width: 100%;
+        max-width: 100%;
     }
 
     .canvas-wrapper canvas,

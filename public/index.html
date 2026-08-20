@@ -2,7 +2,7 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=0.1" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>CommieCake | Sorting Visualiser</title>
         <link rel="icon" href="assets/icons/commiecake.ico" />
         <link rel="stylesheet" href="css/base.css">
@@ -120,9 +120,11 @@
                         </div>
 
                         <div id="canvas-wrapper" class="canvas-wrapper">
-                            <span id="canvas-label-a" class="canvas-label"></span>
-                            <span id="winner-badge-a" class="winner-badge">Winner!</span>
-                            <canvas id="canvas" width="900" height="500"></canvas>
+                            <div class="canvas-frame">
+                                <span id="canvas-label-a" class="canvas-label"></span>
+                                <span id="winner-badge-a" class="winner-badge">Winner!</span>
+                                <canvas id="canvas" width="900" height="500"></canvas>
+                            </div>
                             <pre id="code-panel" class="hidden"><code id="code-content"></code></pre>
                         </div>
                     </div>
@@ -148,9 +150,11 @@
                         </div>
 
                         <div id="canvas-wrapper-b" class="canvas-wrapper">
-                            <span id="canvas-label-b" class="canvas-label"></span>
-                            <span id="winner-badge-b" class="winner-badge">Winner!</span>
-                            <canvas id="canvas-b" width="900" height="500"></canvas>
+                            <div class="canvas-frame">
+                                <span id="canvas-label-b" class="canvas-label"></span>
+                                <span id="winner-badge-b" class="winner-badge">Winner!</span>
+                                <canvas id="canvas-b" width="900" height="500"></canvas>
+                            </div>
                         </div>
                     </div>
                 </div>
