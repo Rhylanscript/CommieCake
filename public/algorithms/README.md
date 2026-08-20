@@ -11,7 +11,10 @@ const meta = {
     id: 'yoursort',         // unique lowercase identifier used only internally
     name: 'Your Sort',      // shown in the picker and code panel
     category: 'Comparison', // the ribbon the sort will be grouped under
-    complexity: 'O(1)',     // shown as a stat when this algorithm is selected
+    time: 'O(1)',           // time complexity of the algorithm
+    space: 'O(1)',          // space complexity of the algorithm
+    stable: false,          // is the algorithm stable?
+    inPlace: true,          // does the algorithm sort in place?
     description: 'One or two sentences explaining how it works, shown in sidebar and info popup.',
     sound: {                // optional - see "custom sounds" below
         swap: 'assets/sounds/your-swap.mp3',
@@ -73,7 +76,10 @@ const meta = {
     id: 'example',
     name: 'Example Sort',
     category: 'Comparison',
-    complexity: 'O(n)',
+    time: 'O(n)',
+    space: 'O(1)',
+    stable: true,
+    inPlace: true,
     description: 'A single left to right pass, swapping adjacent out of order pairs.',
     file: import.meta.url,
 };
