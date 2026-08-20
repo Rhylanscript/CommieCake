@@ -4,7 +4,10 @@ const meta = {
     id: 'heap',
     name: 'Heap Sort',
     category: 'Divide & Conquer',
-    complexity: 'O(n log n)',
+    time: 'O(n log n)',
+    space: 'O(1)',
+    stable: false,
+    inPlace: true,
     description: "Builds a max heap, then repeatedly swaps the root (largest remaining value) to the end and re heapifies.",
     file: import.meta.url,
 };

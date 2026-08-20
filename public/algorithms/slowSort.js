@@ -4,7 +4,10 @@ const meta = {
 	id: 'slow',
 	name: 'Slowsort',
     category: 'Miscellaneous',
-	complexity: 'O(n^log n)',
+	time: 'O(n^log n)',
+    space: 'O(n + k/8)',
+    stable: false,
+    inPlace: true,
 	description: "The evil twin of quicksort that uses the 'multiply and surrender' strategy: deliberately does more recursive work than necessary at every step.",
     file: import.meta.url,
 };

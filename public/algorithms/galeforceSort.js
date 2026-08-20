@@ -4,7 +4,10 @@ const meta = {
     id: 'galeforce',
     name: 'Gale-Force Sort',
     category: 'Comparison',
-    complexity: 'O(n²)',
+    time: 'O(n²)',
+    space: 'O(1)',
+    stable: false,
+    inPlace: true,
     description: 'Simulates a wind tunnel. A forward gust carries small elements ahead, a reverse tide drags large elements back, and localized micro-turbulence rapidly shakes items into place.',
     file: import.meta.url,
 };

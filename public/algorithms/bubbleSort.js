@@ -4,7 +4,10 @@ const meta = {
     id: 'bubble',
     name: 'Bubble Sort',
     category: 'Comparison',
-    complexity: 'O(n²)',
+    time: 'O(n²)',
+    space: 'O(1)',
+    stable: true,
+    inPlace: true,
     description: "Repeatedly swaps adjacent out of order elements, letting the largest values 'bubble' to the end each pass.",
     file: import.meta.url,
 };

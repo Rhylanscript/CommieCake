@@ -4,7 +4,10 @@ const meta = {
     id: 'insertion',
     name: 'Insertion Sort',
     category: 'Comparison',
-    complexity: 'O(n²)',
+    time: 'O(n²)',
+    space: 'O(1)',
+    stable: true,
+    inPlace: true,
     description: "Builds a sorted region one element at a time, shifting larger elements right to make room for each new one.",
     file: import.meta.url,
 }

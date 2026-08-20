@@ -4,7 +4,10 @@ const meta = {
     id: 'thanos',
     name: 'Thanos Sort',
     category: 'Miscellaneous',
-    complexity: 'O(log n)',
+    time: 'O(log n)',
+    space: 'O(1)',
+    stable: true,
+    inPlace: true,
     description: "Checks if the array is sorted. If it isnt, randomly deletes half of the elements. Repeats until the array is sorted.",
     file: import.meta.url,
 };

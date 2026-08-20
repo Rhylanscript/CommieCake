@@ -4,7 +4,10 @@ const meta = {
     id: 'pancake',
     name: 'Pancake Sort',
     category: 'Comparison',
-    complexity: 'O(n²)',
+    time: 'O(n²)',
+    space: 'O(1)',
+    stable: false,
+    inPlace: true,
     description: "Sorts using one move: flipping (reversing) the front of the array (like sorting pancakes with a spatula)",
     file: import.meta.url,
 };

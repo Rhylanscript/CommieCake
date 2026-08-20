@@ -4,7 +4,10 @@ const meta = {
 	id: 'communist',
 	name: 'Communist Sort',
     category: 'Miscellaneous',
-	complexity: 'O(n)',
+	time: 'O(n)',
+    space: 'O(1)',
+    stable: false,
+    inPlace: true,
 	description: "Replaces every value with the average. All values are equal, therefore sorted.",
     file: import.meta.url,
 };

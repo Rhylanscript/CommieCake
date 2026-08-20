@@ -34,8 +34,14 @@ const stepBtn = document.getElementById('step-btn');
 const benchmarkBtn = document.getElementById('benchmark-btn');
 const raceToggleBtn = document.getElementById('race-toggle-btn');
 
-const complexityValueEl = document.getElementById('complexity-value');
-const complexityValueBEl = document.getElementById('complexity-value-b');
+const timeComplexityValueEl = document.getElementById('time-complexity-value');
+const timeComplexityValueBEl = document.getElementById('time-complexity-value-b');
+const spaceComplexityValueEl = document.getElementById('space-complexity-value');
+const spaceComplexityValueBEl = document.getElementById('space-complexity-value-b');
+const stableValueEl = document.getElementById('stable-value');
+const stableValueBEl = document.getElementById('stable-value-b');
+const inPlaceValueEl = document.getElementById('in-place-value');
+const inPlaceValueBEl = document.getElementById('in-place-value-b');
 
 const trackRowBEl = document.getElementById('track-row-b');
 const canvasLabelAEl = document.getElementById('canvas-label-a');
@@ -100,9 +106,20 @@ export function getTrackStatus(slot) {
 	};
 }
 
-export function updateComplexityLabels() {
-	complexityValueEl.textContent = getAlgorithmForSlot('A').complexity;
-	if (isRaceMode) complexityValueBEl.textContent = getAlgorithmForSlot('B').complexity;
+export function updateStatLabels() {
+	const algoA = getAlgorithmForSlot('A');
+	timeComplexityValueEl.textContent = algoA.time;
+	spaceComplexityValueEl.textContent = algoA.space;
+	stableValueEl.textContent = algoA.stable;
+	inPlaceValueEl.textContent = algoA.inPlace;
+
+	if (isRaceMode) {
+		const algoB = getAlgorithmForSlot('B');
+		timeComplexityValueBEl.textContent = algoB.time;
+		spaceComplexityValueBEl.textContent = algoB.space;
+		stableValueBEl.textContent = algoB.stable;
+		inPlaceValueBEl.textContent = algoB.inPlace;
+	}
 }
 
 export function updateTrackLabels() {
@@ -185,7 +202,7 @@ function renderCurrentArray() {
 
 function restoreVisualizerView() {
 	canvas.classList.remove('no-grid');
-	updateComplexityLabels();
+	updateStatLabels();
 }
 
 // --- sorting / animation ---
@@ -225,7 +242,7 @@ function handleAlgorithmChangeB() {
 	stopPlaybackLoop();
 	resetRaceState();
 	resetTimer();
-	updateComplexityLabels();
+	updateStatLabels();
 	updateTrackLabels();
 	renderCurrentArray();
 }
@@ -382,7 +399,7 @@ function toggleRaceMode() {
 	stopPlaybackLoop();
 	resetRaceState();
 	resetTimer();
-	updateComplexityLabels();
+	updateStatLabels();
 	updateTrackLabels();
 	renderCurrentArray();
 }
@@ -399,7 +416,7 @@ function handleBenchmark() {
 
 	canvas.classList.add('no-grid');
 	setTimerDisplayText('A', '—');
-	complexityValueEl.textContent = `n = ${sizeSlider.value}`;
+	timeComplexityValueEl.textContent = `n = ${sizeSlider.value}`;
 
 	showBenchmarkLoading(ctx, canvas);
 	setTimeout(() => {

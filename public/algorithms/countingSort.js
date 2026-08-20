@@ -4,7 +4,10 @@ const meta = {
 	id: 'counting',
 	name: 'Counting Sort',
     category: 'Non-Comparison',
-	complexity: 'O(n + k)',
+	time: 'O(n + k)',
+    space: 'O(n + k)',
+    stable: true,
+    inPlace: false,
 	description: "Tallies how many times each value occurs, then writes values back out in order (no comparisons)",
     file: import.meta.url,
 };

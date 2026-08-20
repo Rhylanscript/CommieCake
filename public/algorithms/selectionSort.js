@@ -4,7 +4,10 @@ const meta = {
     id: 'selection',
     name: 'Selection Sort',
     category: 'Comparison',
-    complexity: 'O(n²)',
+    time: 'O(n²)',
+    space: 'O(1)',
+    stable: false,
+    inPlace: true,
     description: "Scans the unsorted region each pass to find the minimum, then swaps it into place. (one swap every pass)",
     file: import.meta.url,
 };

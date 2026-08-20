@@ -4,7 +4,10 @@ const meta = {
     id: 'oddeven',
     name: 'Odd-Even Sort',
     category: 'Comparison',
-    complexity: 'O(n²) sequential, O(n) phases',
+    time: 'O(n²) sequential, O(n) phases',
+	space: 'O(1)',
+	stable: true,
+	inPlace: true,
     description: "Alternates comparing all even indexed and all odd indexed pairs simultaneously (designed for parallel hardware)",
     file: import.meta.url,
 };

@@ -4,7 +4,10 @@ const meta = {
     id: 'quick',
     name: 'Quicksort',
     category: 'Divide & Conquer',
-    complexity: 'O(n log n) avg',
+    time: 'O(n log n) avg',
+    space: 'O(log n)',
+    stable: false,
+    inPlace: true,
     description: "Picks a pivot, partitions smaller values to one side and larger to the other, then recurses on each side.",
     file: import.meta.url,
 };

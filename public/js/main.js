@@ -1,6 +1,6 @@
 // public/js/main.js
 
-import { getSelectedAlgorithm, getTrackStatus, getCurrentMaxValue, handleAlgorithmSelect, handleNewArray, initAnimationEngine, isRaceModeOn, togglePlayPause, updateComplexityLabels, updateTrackLabels, handleStep } from "./animationEngine.js";
+import { getSelectedAlgorithm, getTrackStatus, getCurrentMaxValue, handleAlgorithmSelect, handleNewArray, initAnimationEngine, isRaceModeOn, togglePlayPause, updateStatLabels, updateTrackLabels, handleStep } from "./animationEngine.js";
 import { initCodePanel } from "./codePanel.js";
 import { closeCommandPalette, initCommandPalette, isPaletteOpen, moveActiveIndex, selectActiveOption } from "./commandPalette.js";
 import { initDescriptionPopup, updateDescription } from "./descriptionPopup.js";
@@ -54,7 +54,7 @@ initCodePanel({ getSelectedAlgorithm, isRaceMode: isRaceModeOn });
 initTimer({ isRaceMode: isRaceModeOn, getTrackStatus });
 initSoundBridge({ getSelectedAlgorithm, getCurrentMaxValue, isRaceMode: isRaceModeOn});
 
-updateComplexityLabels();
+updateStatLabels();
 updateDescription();
 updateTrackLabels();
 handleNewArray();

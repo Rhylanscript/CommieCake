@@ -4,7 +4,10 @@ const meta = {
 	id: 'bogo',
 	name: 'Bogo Sort',
     category: 'Miscellaneous',
-	complexity: 'O((n+1)!) expected',
+	time: 'O((n+1)!) expected',
+    space: 'O(1)',
+    stable: false,
+    inPlace: true,
 	description: "Shuffles randomly and checks if it got lucky. Expected runtime is astronomically bad.",
     file: import.meta.url,
 };

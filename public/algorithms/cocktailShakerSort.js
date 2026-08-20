@@ -4,7 +4,10 @@ const meta = {
     id: 'cocktail',
     name: 'Cocktail Shaker Sort',
     category: 'Comparison',
-    complexity: 'O(n²)',
+    time: 'O(n²)',
+    space: 'O(1)',
+    stable: true,
+    inPlace: true,
     description: "Bubble sort that alternates direction each pass, shrinking the unsorted window from both ends at once.",
     file: import.meta.url,
 };

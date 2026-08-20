@@ -4,7 +4,10 @@ const meta = {
     id: 'merge',
     name: 'Merge Sort',
     category: 'Divide & Conquer',
-    complexity: 'O(n log n)',
+    time: 'O(n log n)',
+    space: 'O(n)',
+    stable: true,
+    inPlace: false,
     description: "Recursively splits array in half, sorts each half, then merges the two sorted halves back together.",
     file: import.meta.url,
 };

@@ -57,7 +57,19 @@ canvas.no-grid {
     color: var(--amber);
 }
 
-.stat-value-complexity {
+.stat-value-time-complexity {
+    color: var(--teal);
+}
+
+.stat-value-space-complexity {
+    color: var(--teal);
+}
+
+.stat-value-stable {
+    color: var(--teal);
+}
+
+.stat-value-in-place {
     color: var(--teal);
 }
 

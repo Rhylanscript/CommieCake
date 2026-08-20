@@ -4,7 +4,10 @@ const meta = {
     id: 'shell',
     name: 'Shell Sort',
     category: 'Comparison',
-    complexity: 'O(n log² n) approx',
+    time: 'O(n log² n) approx',
+    space: 'O(1)',
+    stable: false,
+    inPlace: true,
     description: "Similar to insertion sort but compares far apart elements first using a shrinking gap, so big moves happen early.",
     file: import.meta.url,
 };

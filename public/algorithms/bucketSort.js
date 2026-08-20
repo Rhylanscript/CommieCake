@@ -4,7 +4,10 @@ const meta = {
     id: 'bucket',
     name: 'Bucket Sort',
     category: 'Non-Comparison',
-    complexity: 'O(n + k) avg, O(n²) worst',
+    time: 'O(n + k) avg, O(n²) worst',
+    space: 'O(n + k)',
+    stable: false,
+    inPlace: false,
     description: "Distributes values into several buckets by range, sorts each bucket individually, then concatenates them.",
     file: import.meta.url,
 };
