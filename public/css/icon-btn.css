@@ -1,0 +1,42 @@
+/* --- icon button --- */
+
+.icon-btn {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    z-index: 200;
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    border: 1px solid var(--panel-border);
+    background: var(--bg);
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.icon-btn img {
+    display: block;
+}
+
+.icon-btn.active {
+    border-color: var(--bar-default);
+}
+
+.icon-btn:hover,
+.icon-btn:focus-visible {
+    border-color: var(--teal);
+    outline: none;
+}
+
+.icon-btn:hover img,
+.icon-btn:focus-visible img {
+    opacity: 1;
+}
+
+#sound-icon {
+    pointer-events: none !important;
+}

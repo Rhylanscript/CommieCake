@@ -1,0 +1,101 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+:root {
+    --bg: #10142a;
+    --panel: #1a2040;
+    --panel-border: #2e3768;
+    --text: #e7e6dc;
+    --text-dim: #8890b5;
+
+    --bar-default: #4a5a8a;
+
+    --amber: #e8a33d;
+    --teal: #3ec9b0;
+    --purple: #c34fe0;
+    --lime: #09c609;
+    --red: #f44747;
+    --white: #fff;
+    --light-blue: #3adeff;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+    overflow: hidden;
+}
+
+body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'JetBrains Mono', Consolas, Menlo, monospace;
+    overflow: hidden;
+}
+
+#app {
+    display: flex;
+    height: 100vh;
+}
+
+/* --- scrollbars --- */
+
+#controls,
+main,
+.command-palette-list,
+#code-panel {
+    scrollbar-width: thin;
+    scrollbar-color: var(--panel-border) var(--bg);
+}
+
+#controls::-webkit-scrollbar,
+main::-webkit-scrollbar,
+.command-palette-list::-webkit-scrollbar,
+#code-panel::-webkit-scrollbar {
+    width: 10px;
+}
+
+#controls::-webkit-scrollbar-track,
+main::-webkit-scrollbar-track,
+.command-palette-list::-webkit-scrollbar-track,
+#code-panel::-webkit-scrollbar-track {
+    background: var(--bg);
+}
+
+#controls::-webkit-scrollbar-thumb,
+main::-webkit-scrollbar-thumb,
+.command-palette-list::-webkit-scrollbar-thumb,
+#code-panel::-webkit-scrollbar-thumb {
+    background: var(--panel-border);
+    border-radius: 6px;
+    border: 2px solid var(--bg);
+}
+
+#controls::-webkit-scrollbar-thumb:hover,
+main::-webkit-scrollbar-thumb:hover,
+.command-palette-list::-webkit-scrollbar-thumb:hover,
+#code-panel::-webkit-scrollbar-thumb:hover {
+    background: var(--teal);
+}
+
+/* --- media queries --- */
+
+@media (prefers-reduced-motion: reduce) {
+    * {
+        transition: none !important;
+    }
+}
+
+@media (max-width: 860px) {
+    body {
+        overflow: auto;
+    }
+
+    #app,
+    #app.racing {
+        flex-direction: column;
+        height: auto;
+    }
+}

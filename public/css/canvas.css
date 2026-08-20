@@ -1,0 +1,280 @@
+/* --- canvas --- */
+
+main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: safe center;
+    gap: 12px;
+    padding: 32px;
+    min-width: 0;
+    height: 100%;
+    overflow-y: auto;
+}
+
+canvas {
+    width: 100%;
+    max-width: 1100px;
+    height: auto;
+    background-color: var(--bg);
+    background-image: repeating-linear-gradient(
+        to top,
+        var(--panel-border) 0,
+        var(--panel-border) 1px,
+        transparent 1px,
+        transparent 50px
+    );
+    border: 1px solid var(--panel-border);
+    border-radius: 6px;
+}
+
+canvas.no-grid {
+    background-image: none;
+}
+
+/* --- stats bar --- */
+
+.stat {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.stat-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-dim);
+}
+
+.stat-value {
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+.stat-value-timer {
+    color: var(--amber);
+}
+
+.stat-value-complexity {
+    color: var(--teal);
+}
+
+.stat-value-comparisons {
+  color: var(--purple);
+}
+
+.stat-value-swaps {
+  color: var(--red);
+}
+
+/* --- race tracks --- */
+
+.race-tracks {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    gap: 20px;
+    width: 100%;
+    max-width: 1100px;
+}
+
+.track-row {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    gap: 12px;
+}
+
+.track-row.hidden {
+    display: none;
+}
+
+.track-stats {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 12px 32px;
+}
+
+.canvas-wrapper {
+    position: relative;
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.canvas-wrapper canvas {
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    margin: 0;
+}
+
+.canvas-wrapper.hidden {
+    display: none;
+}
+
+.canvas-label {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    z-index: 5;
+    background: rgba(16, 20, 42, 0.85);
+    color: var(--teal);
+    font-size: 0.68rem;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 4px;
+    border: 1px solid var(--panel-border);
+    pointer-events: none;
+    display: none;
+}
+
+.race-banner {
+    margin: 0;
+    text-align: center;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--amber);
+    min-height: 1.2em;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.race-banner.visible {
+    opacity: 1;
+}
+
+#race-toggle-btn.active {
+    border-color: var(--amber);
+    color: var(--amber);
+}
+
+.winner-badge {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    z-index: 6;
+    background: rgba(16, 20, 42, 0.9);
+    color: var(--amber);
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 4px;
+    border: 1px solid var(--amber);
+    pointer-events: none;
+    display: none;
+}
+
+.winner-badge.visible {
+    display: block;
+}
+
+/* --- race mode layout --- */
+
+#app.racing main {
+    padding-right: 16px;
+}
+
+#app.racing .race-tracks {
+    max-width: none;
+    width: 100%;
+    gap: 12px;
+}
+
+#app.racing .track-row {
+    flex-direction: row;
+    align-items: stretch;
+    gap: 16px;
+}
+
+#app.racing .track-stats {
+    flex-direction: column;
+    justify-content: center;
+    flex-wrap: nowrap;
+    width: 220px;
+    flex-shrink: 0;
+    gap: 12px;
+}
+
+#app.racing .stat {
+    flex-direction: row;
+    align-items: baseline;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+#app.racing .stat-value {
+    white-space: normal;
+}
+
+#app.racing .canvas-wrapper {
+    align-items: flex-start;
+    justify-content: flex-start;
+}
+
+#app.racing .canvas-wrapper canvas {
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    margin: 0;
+}
+
+#app.racing .canvas-label {
+    display: block;
+}
+
+/* --- media queries --- */
+
+@media (max-width: 860px) {
+    main,
+    #app.racing main {
+        height: auto;
+        overflow-y: visible;
+        padding: 20px 16px;
+    }
+
+    .race-tracks,
+    #app.racing .race-tracks {
+        flex: none;
+    }
+
+    .track-row,
+    #app.racing .track-row {
+        flex: none;
+        flex-direction: column;
+    }
+
+    .track-stats,
+    #app.racing .track-stats {
+        flex-direction: row;
+        min-width: 0;
+    }
+
+    #app.racing .stat {
+        flex-direction: column;
+    }
+
+    .canvas-wrapper,
+    #app.racing .canvas-wrapper {
+        flex: none;
+    }
+
+    .canvas-wrapper canvas,
+    #app.racing .canvas-wrapper canvas {
+        width: 100%;
+        height: auto;
+        max-width: 100%;
+        max-height: none;
+    }
+}
