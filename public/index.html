@@ -87,14 +87,6 @@
                     <button id="benchmark-btn">Benchmark</button>
                     <button id="code-btn">Show Code</button>
                 </div>
-
-                <div class="timeline-controls" id="timeline-controls">
-                    <button type="button" id="reset-btn" title="Reset to Start">Reset</button>
-                    <button type="button" id="step-back-btn" title="Step Backward">&laquo;</button>
-                    <button type="button" id="play-pause-btn" class="primary">Start</button>
-                    <button type="button" id="step-forward-btn" title="Step Forward">&raquo;</button>
-                    <button type="button" id="jump-end-btn" title="Jump to End">End</button>
-                </div>
             </aside>
 
             <main>
@@ -217,6 +209,26 @@
                             </div>
                         </div>
                     </div>
+                </div>
+                
+                <div class="timeline-controls" id="timeline-controls">
+                    <button type="button" id="reset-btn" class="timeline-btn" aria-label="Reset to start" title="Reset">
+                        <!-- you dont even understand how look it took me to make this stupid icon -->
+                        <svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg>
+                    </button>
+                    <button type="button" id="step-back-btn" class="timeline-btn" aria-label="Step backward" title="Step back">
+                        <svg viewBox="0 0 24 24"><polygon points="19 20 9 12 19 4 19 20"></polygon><line x1="5" y1="19" x2="5" y2="5"></line></svg>
+                    </button>
+                    <button type="button" id="play-pause-btn" class="timeline-btn" aria-label="Play">
+                        <svg class="icon-play" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                        <svg class="icon-pause" viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
+                    </button>
+                    <button type="button" id="step-forward-btn" class="timeline-btn" aria-label="Step forward" title="Step forward">
+                        <svg viewBox="0 0 24 24"><polygon points="5 4 15 12 5 20 5 4"></polygon><line x1="19" y1="5" x2="19" y2="19"></line></svg>
+                    </button>
+                    <button type="button" id="jump-end-btn" class="timeline-btn" aria-label="Jump to end" title="Jump to end">
+                        <svg viewBox="0 0 24 24"><polyline points="13 17 18 12 13 7"></polyline><polyline points="6 17 11 12 6 7"></polyline></svg>
+                    </button>
                 </div>
             </main>
         </div>

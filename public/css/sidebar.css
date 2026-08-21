@@ -198,25 +198,6 @@ button.primary:hover {
     color: var(--teal);
 }
 
-/* --- timeline controls --- */
-
-.timeline-controls {
-    display: flex;
-    align-items: stretch;
-    gap: 6px;
-    margin-top: 6px;
-}
-
-.timeline-controls button {
-    flex: 1;
-    padding: 10px 4px;
-    font-size: 0.85rem;
-}
-
-.timeline-controls #play-pause-btn {
-    flex: 1.6;
-}
-
 /* --- media queries --- */
 
 @media (max-width: 860px) {

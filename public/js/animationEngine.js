@@ -48,8 +48,12 @@ const inPlaceValueEl = document.getElementById('in-place-value');
 const inPlaceValueBEl = document.getElementById('in-place-value-b');
 
 const trackRowBEl = document.getElementById('track-row-b');
+const trackStatsAEl = document.querySelector('#track-row-a .track-stats');
 const canvasLabelAEl = document.getElementById('canvas-label-a');
 const canvasLabelBEl = document.getElementById('canvas-label-b');
+
+const mainEl = document.querySelector('main');
+const timelineControlsEl = document.getElementById('timeline-controls');
 
 const winnerBadgeAEl = document.getElementById('winner-badge-a');
 const winnerBadgeBEl = document.getElementById('winner-badge-b');
@@ -98,6 +102,13 @@ export function initAnimationEngine() {
 	jumpEndBtn.addEventListener('click', handleJumpToEnd);
 	benchmarkBtn.addEventListener('click', handleBenchmark);
 	raceToggleBtn.addEventListener('click', toggleRaceMode);
+
+	// align timeline to canvas when its width is changed
+	const resizeObserver = new ResizeObserver(() => alignTimelineToCanvas());
+	resizeObserver.observe(canvas);
+	resizeObserver.observe(mainEl);
+	window.addEventListener('resize', alignTimelineToCanvas);
+	requestAnimationFrame(alignTimelineToCanvas);
 }
 
 export function getSelectedAlgorithm() {
@@ -172,7 +183,9 @@ export function togglePlayPause() {
 	}
 
 	isPlaying = true;
-	playPauseBtn.textContent = 'Pause';
+	playPauseBtn.classList.add('is-playing');
+	playPauseBtn.setAttribute('aria-label', 'Pause')
+
 	startTimerSegment();
 	runAnimationLoop();
 }
@@ -278,6 +291,23 @@ function restoreVisualizerView() {
 	updateStatLabels();
 }
 
+function alignTimelineToCanvas() {
+	const canvasRect = canvas.getBoundingClientRect();
+	const mainRect = mainEl.getBoundingClientRect();
+	if (canvasRect.width === 0 || mainRect.width === 0) return;
+
+	const canvasCenterX = canvasRect.left + canvasRect.width / 2;
+	const mainCenterX = mainRect.left + mainRect.width / 2;
+	timelineControlsEl.style.transform = `translateX(${canvasCenterX - mainCenterX}px)`;
+	if (isRaceMode) {
+		trackStatsAEl.style.transform = '';
+	} else {
+		trackStatsAEl.style.transform = 'none';
+		const statsLeft = trackStatsAEl.getBoundingClientRect().left;
+		trackStatsAEl.style.transform = `translateX(${canvasRect.left - statsLeft}px)`;
+	}
+}
+
 // --- timeline / history helpers ---
 
 function pushHistoryEntry(stepData) {
@@ -324,7 +354,8 @@ function updateTimelineButtonStates() {
 
 function stopPlaybackLoop() {
 	isPlaying = false;
-	playPauseBtn.textContent = 'Start';
+	playPauseBtn.classList.remove('is-playing');
+	playPauseBtn.setAttribute('aria-label', 'Play')
 	clearTimeout(animationTimeoutId);
 	cancelAnimationFrame(animationFrameId);
 	pauseTimerSegment();

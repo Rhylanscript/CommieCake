@@ -11,6 +11,7 @@ main {
     min-width: 0;
     height: 100%;
     overflow-y: auto;
+    overflow-x: hidden;
 }
 
 canvas {
@@ -171,7 +172,7 @@ canvas.no-grid {
     min-height: 0;
     display: flex;
     align-items: stretch;
-    justify-content: flex-start;
+    justify-content: center;
 }
 
 .canvas-frame {
@@ -295,6 +296,82 @@ canvas.no-grid {
 }
 
 #app.racing .canvas-label {
+    display: block;
+}
+
+/* --- timeline controls --- */
+
+.timeline-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    max-width: 1100px;
+    flex-shrink: 0;
+    transition: transform 0.15s ease;
+}
+
+.timeline-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 6px;
+    border: 1px solid var(--panel-border);
+    background: var(--bg);
+    color: var(--text);
+    cursor: pointer;
+    transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
+}
+
+.timeline-btn svg {
+    width: 20px;
+    height: 20px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.timeline-btn:hover,
+.timeline-btn:focus-visible {
+    border-color: var(--teal);
+    color: var(--teal);
+    outline: none;
+}
+
+.timeline-btn:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+    border-color: var(--panel-border);
+    color: var(--text-dim);
+}
+
+#play-pause-btn.timeline-btn {
+    width: 56px;
+    height: 56px;
+    background: var(--teal);
+    border-color: var(--teal);
+    color: var(--bg);
+}
+
+#play-pause-btn.timeline-btn:hover {
+    background: transparent;
+    color: var(--teal);
+}
+
+#play-pause-btn .icon-pause {
+    display: none;
+}
+
+#play-pause-btn.is-playing .icon-play {
+    display: none;
+}
+
+#play-pause-btn.is-playing .icon-pause {
     display: block;
 }
 
