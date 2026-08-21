@@ -3,8 +3,8 @@
 import { drawBars } from './renderer.js';
 import { playCompletionChime } from './sound.js';
 import { getAlgorithmForSlot, syncPickerLabel } from './commandPalette.js';
-import { getCurrentElapsedMs, resetTimer, startTimerSegment, pauseTimerSegment, setTimerDisplayText } from './timer.js';
-import { resetCounters, tallyTrackStep } from './counters.js';
+import { getCurrentElapsedMs, resetTimer, startTimerSegment, pauseTimerSegment, setTimerDisplayText, formatElapsedMs } from './timer.js';
+import { resetCounters, tallyTrackStep, getTrackCounters, setTrackCounterDisplay } from './counters.js';
 import { isCodePanelOpen, setCodePanelOpen, refreshCodePanelIfOpen, setCodePanelDisabled } from './codePanel.js';
 import { showBenchmarkLoading, runBenchmark } from './benchmark.js';
 import { updateDescription } from './descriptionPopup.js';
@@ -30,8 +30,11 @@ const speedSlider = document.getElementById('speed-slider');
 const speedNumber = document.getElementById('speed-number');
 
 const newArrayBtn = document.getElementById('new-array-btn');
+const resetBtn = document.getElementById('reset-btn');
+const stepBackBtn = document.getElementById('step-back-btn');
 const playPauseBtn = document.getElementById('play-pause-btn');
-const stepBtn = document.getElementById('step-btn');
+const stepForwardBtn = document.getElementById('step-forward-btn');
+const jumpEndBtn = document.getElementById('jump-end-btn');
 const benchmarkBtn = document.getElementById('benchmark-btn');
 const raceToggleBtn = document.getElementById('race-toggle-btn');
 
@@ -67,6 +70,12 @@ let trackBDone = false;
 let trackAFinishMs = null;
 let trackBFinishMs = null;
 
+// --- timeline / step-history state ---
+const MAX_HISTORY_STEPS = 2000;
+const JUMP_TO_END_SAFETY_CAP = 2_000_000;
+let stepHistory = []; // { stepData, comparisons, swaps, elapsedMs }[]
+let historyIndex = -1;
+
 // --- speed curve tuning ---
 const MAX_TICK_MS = 220;
 const FRAME_TICK_MS = 16;
@@ -82,8 +91,11 @@ export function initAnimationEngine() {
 	bindRangeToNumber(speedSlider, speedNumber, () => {});
 
 	newArrayBtn.addEventListener('click', handleNewArray);
+	resetBtn.addEventListener('click', handleResetTimeline);
+	stepBackBtn.addEventListener('click', handleStepBack);
 	playPauseBtn.addEventListener('click', togglePlayPause);
-	stepBtn.addEventListener('click', handleStep);
+	stepForwardBtn.addEventListener('click', handleStepForward);
+	jumpEndBtn.addEventListener('click', handleJumpToEnd);
 	benchmarkBtn.addEventListener('click', handleBenchmark);
 	raceToggleBtn.addEventListener('click', toggleRaceMode);
 }
@@ -153,7 +165,7 @@ export function togglePlayPause() {
 
 	restoreVisualizerView();
 
-	if (isEverythingDone()) {
+	if (isPlaybackFullyFinished()) {
 		resetRaceState();
 		resetTimer();
 		renderCurrentArray();
@@ -165,18 +177,78 @@ export function togglePlayPause() {
 	runAnimationLoop();
 }
 
-export function handleStep() {
+export function handleStepForward() {
 	restoreVisualizerView();
 	stopPlaybackLoop();
 
-	if (isEverythingDone()) {
-		resetRaceState();
-		resetTimer();
-		renderCurrentArray();
+	if (isRaceMode) {
+		if (isEverythingDone()) {
+			resetRaceState();
+			resetTimer();
+			renderCurrentArray();
+			return;
+		}
+		advanceOneStep();
 		return;
 	}
 
-	advanceOneStep();
+	if (isPlaybackCaughtUpAndDone()) {
+		handleResetTimeline();
+		return;
+	}
+
+	if (advanceSingleModeCursor()) {
+		displayHistoryEntry(historyIndex);
+		playSoundForStep(stepHistory[historyIndex].stepData);
+	}
+
+	if (isPlaybackCaughtUpAndDone()) onRunComplete();
+}
+
+export function handleStepBack() {
+	if (isRaceMode) return;
+	stopPlaybackLoop();
+	restoreVisualizerView();
+
+	if (historyIndex < 0) return; // already at the og array
+
+	historyIndex--;
+
+	if (historyIndex < 0) {
+		drawTrack('A', null);
+		setTrackCounterDisplay('A', 0, 0);
+		setTimerDisplayText('A', formatElapsedMs(0));
+		updateTimelineButtonStates();
+	} else {
+		displayHistoryEntry(historyIndex);
+	}
+}
+
+export function handleJumpToEnd() {
+	if (isRaceMode) return;
+	stopPlaybackLoop();
+	restoreVisualizerView();
+
+	let guard = 0;
+	while (!isPlaybackCaughtUpAndDone() && guard < JUMP_TO_END_SAFETY_CAP) {
+		advanceSingleModeCursor();
+		guard++;
+	}
+
+	if (guard >= JUMP_TO_END_SAFETY_CAP) {
+		console.warn('Jump to End hit its safety cap — this algorithm may not reliably finish at this array size.');
+	}
+
+	if (stepHistory.length > 0) displayHistoryEntry(historyIndex);
+	if (isPlaybackCaughtUpAndDone()) onRunComplete();
+}
+
+export function handleResetTimeline() {
+	stopPlaybackLoop();
+	resetRaceState();
+	resetTimer();
+	restoreVisualizerView();
+	renderCurrentArray();
 }
 
 // --- rendering ---
@@ -206,6 +278,48 @@ function restoreVisualizerView() {
 	updateStatLabels();
 }
 
+// --- timeline / history helpers ---
+
+function pushHistoryEntry(stepData) {
+	const { comparisons, swaps } = getTrackCounters('A');
+	stepHistory.push({ stepData, comparisons, swaps, elapsedMs: getCurrentElapsedMs() });
+	if (stepHistory.length > MAX_HISTORY_STEPS) stepHistory.shift();
+	historyIndex = stepHistory.length - 1;
+}
+
+function displayHistoryEntry(index) {
+	const entry = stepHistory[index];
+	if (!entry) return;
+	drawTrack('A', entry.stepData);
+	setTrackCounterDisplay('A', entry.comparisons, entry.swaps);
+	setTimerDisplayText('A', formatElapsedMs(entry.elapsedMs));
+	updateTimelineButtonStates();
+}
+
+function advanceSingleModeCursor() {
+	if (historyIndex < stepHistory.length - 1) {
+		historyIndex++;
+		return true;
+	}
+	if (trackADone) return false;
+	const step = getNextTrackStep('A'); // pushes a history entry + sets historyIndex to the new
+	return step !== null;
+}
+
+function isPlaybackCaughtUpAndDone() {
+	return trackADone && historyIndex >= stepHistory.length - 1;
+}
+
+function isPlaybackFullyFinished() {
+	return isRaceMode ? isEverythingDone() : isPlaybackCaughtUpAndDone();
+}
+
+function updateTimelineButtonStates() {
+	if (isRaceMode) return;
+	stepBackBtn.disabled = historyIndex < 0;
+	jumpEndBtn.disabled = isPlaybackCaughtUpAndDone();
+}
+
 // --- sorting / animation ---
 
 function stopPlaybackLoop() {
@@ -223,9 +337,12 @@ function resetRaceState() {
 	trackBDone = false;
 	trackAFinishMs = null;
 	trackBFinishMs = null;
+	stepHistory = [];
+	historyIndex = -1;
 	resetCounters();
 	winnerBadgeAEl.classList.remove('visible');
 	winnerBadgeBEl.classList.remove('visible');
+	updateTimelineButtonStates();
 }
 
 function handleAlgorithmChangeA() {
@@ -274,6 +391,9 @@ function getNextTrackStep(slot) {
 	}
 
 	tallyTrackStep(slot, result.value);
+
+	if (isA && !isRaceMode) pushHistoryEntry(result.value);
+
 	return result.value;
 }
 
@@ -343,32 +463,50 @@ function runAnimationLoop() {
 	const stepsThisTick = getStepsPerTick();
 	const tickStart = performance.now();
 
-	let lastStepA = null;
-	let lastStepB = null;
+	if (isRaceMode) {
+		let lastStepA = null;
+		let lastStepB = null;
 
-	for (let i = 0; i < stepsThisTick; i++) {
-		if (performance.now() - tickStart > FRAME_BUDGET_MS) break;
-		if (isEverythingDone()) break;
+		for (let i = 0; i < stepsThisTick; i++) {
+			if (performance.now() - tickStart > FRAME_BUDGET_MS) break;
+			if (isEverythingDone()) break;
 
-		if (!trackADone) {
-			const s = getNextTrackStep('A');
-			if (s) lastStepA = s;
+			if (!trackADone) {
+				const s = getNextTrackStep('A');
+				if (s) lastStepA = s;
+			}
+			if (!trackBDone) {
+				const s = getNextTrackStep('B');
+				if (s) lastStepB = s;
+			}
 		}
-		if (isRaceMode && !trackBDone) {
-			const s = getNextTrackStep('B');
-			if (s) lastStepB = s;
+
+		if (lastStepA) drawTrack('A', lastStepA);
+		if (lastStepB) drawTrack('B', lastStepB);
+
+		if (isEverythingDone()) {
+			onRunComplete();
+			return;
 		}
-	}
+	} else {
+		let advanced = false;
 
-	if (lastStepA) {
-		drawTrack('A', lastStepA);
-		if (!isRaceMode) playSoundForStep(lastStepA);
-	}
-	if (isRaceMode && lastStepB) drawTrack('B', lastStepB);
+		for (let i = 0; i < stepsThisTick; i++) {
+			if (performance.now() - tickStart > FRAME_BUDGET_MS) break;
+			if (isPlaybackCaughtUpAndDone()) break;
 
-	if (isEverythingDone()) {
-		onRunComplete();
-		return;
+			if (advanceSingleModeCursor()) advanced = true;
+		}
+
+		if (advanced) {
+			displayHistoryEntry(historyIndex);
+			playSoundForStep(stepHistory[historyIndex].stepData);
+		}
+
+		if (isPlaybackCaughtUpAndDone()) {
+			onRunComplete();
+			return;
+		}
 	}
 
 	if (tickDelay > 0) {
@@ -389,9 +527,12 @@ function toggleRaceMode() {
 	descriptionRowEl.classList.toggle('hidden', isRaceMode);
 	algoBControlGroupEl.classList.toggle('hidden', !isRaceMode);
 	trackRowBEl.classList.toggle('hidden', !isRaceMode);
-	appEl.classList.toggle('racing', isRaceMode); // drives the whole layout switch — see style.css
+	appEl.classList.toggle('racing', isRaceMode);
 
 	benchmarkBtn.disabled = isRaceMode;
+	resetBtn.disabled = isRaceMode;
+	stepBackBtn.disabled = isRaceMode;
+	jumpEndBtn.disabled = isRaceMode;
 	setCodePanelDisabled(isRaceMode);
 	if (isRaceMode && isCodePanelOpen()) setCodePanelOpen(false);
 

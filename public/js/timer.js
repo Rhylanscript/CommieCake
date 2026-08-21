@@ -17,7 +17,7 @@ export function initTimer({ isRaceMode: isRaceModeFn, getTrackStatus: getTrackSt
 	getTrackStatus = getTrackStatusFn;
 }
 
-function formatElapsedMs(ms) {
+export function formatElapsedMs(ms) {
 	return (ms / 1000).toFixed(2) + 's';
 }
 

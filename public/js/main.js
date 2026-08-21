@@ -1,6 +1,6 @@
 // public/js/main.js
 
-import { getSelectedAlgorithm, getTrackStatus, getCurrentMaxValue, handleAlgorithmSelect, handleNewArray, initAnimationEngine, isRaceModeOn, togglePlayPause, updateStatLabels, updateTrackLabels, handleStep } from "./animationEngine.js";
+import { getSelectedAlgorithm, getTrackStatus, getCurrentMaxValue, handleAlgorithmSelect, handleNewArray, initAnimationEngine, isRaceModeOn, togglePlayPause, updateStatLabels, updateTrackLabels, handleStepForward, handleStepBack } from "./animationEngine.js";
 import { initCodePanel } from "./codePanel.js";
 import { closeCommandPalette, initCommandPalette, isPaletteOpen, moveActiveIndex, selectActiveOption } from "./commandPalette.js";
 import { initDescriptionPopup, updateDescription } from "./descriptionPopup.js";
@@ -40,7 +40,10 @@ function handleKeydown(e) {
 		togglePlayPause();
 	} else if (e.code === 'ArrowRight') {
 		e.preventDefault();
-		handleStep();
+		handleStepForward();
+	} else if (e.code === 'ArrowLeft') {
+		e.preventDefault();
+		handleStepBack();
 	}
 }
 

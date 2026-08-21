@@ -20,6 +20,11 @@ function updateTrackCounterDisplay(slot) {
 	}
 }
 
+function countUnits(indices) {
+	if (!indices || indices.length === 0) return 0;
+	return Math.max(1, Math.floor(indices.length / 2));
+}
+
 export function resetCounters() {
 	comparisonCountA = 0;
 	swapCountA = 0;
@@ -27,11 +32,6 @@ export function resetCounters() {
 	swapCountB = 0;
 	updateTrackCounterDisplay('A');
 	updateTrackCounterDisplay('B');
-}
-
-function countUnits(indices) {
-	if (!indices || indices.length === 0) return 0;
-	return Math.max(1, Math.floor(indices.length / 2));
 }
 
 export function tallyTrackStep(slot, stepData) {
@@ -43,4 +43,20 @@ export function tallyTrackStep(slot, stepData) {
 		swapCountB += countUnits(stepData.swapping);
 	}
 	updateTrackCounterDisplay(slot);
+}
+
+export function getTrackCounters(slot) {
+	return slot === 'A'
+		? { comparisons: comparisonCountA, swaps: swapCountA }
+		: { comparisons: comparisonCountB, swaps: swapCountB };
+}
+
+export function setTrackCounterDisplay(slot, comparisons, swaps) {
+	if (slot === 'A') {
+		comparisonsValueEl.textContent = comparisons.toLocaleString();
+		swapsValueEl.textContent = swaps.toLocaleString();
+	} else {
+		comparisonsValueBEl.textContent = comparisons.toLocaleString();
+		swapsValueBEl.textContent = swaps.toLocaleString();
+	}
 }
