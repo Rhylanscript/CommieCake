@@ -76,7 +76,6 @@ let trackBFinishMs = null;
 
 // --- timeline / step-history state ---
 const MAX_HISTORY_STEPS = 2000;
-const JUMP_TO_END_SAFETY_CAP = 2_000_000;
 let stepHistory = []; // { stepData, comparisons, swaps, elapsedMs }[]
 let historyIndex = -1;
 
@@ -242,18 +241,21 @@ export function handleJumpToEnd() {
 	stopPlaybackLoop();
 	restoreVisualizerView();
 
-	let guard = 0;
-	while (!isPlaybackCaughtUpAndDone() && guard < JUMP_TO_END_SAFETY_CAP) {
-		advanceSingleModeCursor();
-		guard++;
-	}
+	if(isPlaybackCaughtUpAndDone()) return;
 
-	if (guard >= JUMP_TO_END_SAFETY_CAP) {
-		console.warn('Jump to End hit its safety cap — this algorithm may not reliably finish at this array size.');
-	}
+	const sortedArray = [...currentArray].sort((a, b) => a - b);
+	const finalStep = {
+		array: sortedArray,
+		comparing: [],
+		swapping: [],
+		sortedIndices: sortedArray.map((_, i) => i),
+	};
 
-	if (stepHistory.length > 0) displayHistoryEntry(historyIndex);
-	if (isPlaybackCaughtUpAndDone()) onRunComplete();
+	trackADone = true;
+	trackAFinishMs = getCurrentElapsedMs();
+	pushHistoryEntry(finalStep);
+	displayHistoryEntry(historyIndex);
+	onRunComplete();
 }
 
 export function handleResetTimeline() {
