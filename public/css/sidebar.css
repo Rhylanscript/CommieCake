@@ -216,7 +216,7 @@ button.primary:hover {
         gap: 8px;
     }
 
-    .button-row #play-pause-btn {
+    /* .button-row #play-pause-btn {
         grid-column: span 2;
         order: -1;
     }
@@ -224,7 +224,7 @@ button.primary:hover {
     .button-row #new-array-btn { order: 1; }
     .button-row #step-btn { order: 2; }
     .button-row #benchmark-btn { order: 3; }
-    .button-row #code-btn { order: 4; }
+    .button-row #code-btn { order: 4; } */
 }
 
 @media (max-width: 480px) {
@@ -235,5 +235,10 @@ button.primary:hover {
     .range-row input[type='number'] {
         width: 52px;
         font-size: 0.78rem;
+    }
+
+    .timeline-controls button {
+        font-size: 0.72rem;
+        padding: 8px 2px;
     }
 }
