@@ -3,13 +3,36 @@
 import { drawBars } from './renderer.js';
 import { playCompletionChime } from './sound.js';
 import { getAlgorithmForSlot, syncPickerLabel } from './commandPalette.js';
-import { getCurrentElapsedMs, resetTimer, startTimerSegment, pauseTimerSegment, setTimerDisplayText, formatElapsedMs } from './timer.js';
-import { resetCounters, tallyTrackStep, getTrackCounters, setTrackCounterDisplay } from './counters.js';
+import { resetTimer, startTimerSegment, pauseTimerSegment, setTimerDisplayText, formatElapsedMs } from './timer.js';
+import { resetCounters, setTrackCounterDisplay } from './counters.js';
 import { isCodePanelOpen, setCodePanelOpen, refreshCodePanelIfOpen, setCodePanelDisabled } from './codePanel.js';
 import { showBenchmarkLoading, runBenchmark } from './benchmark.js';
 import { updateDescription } from './descriptionPopup.js';
 import { playSoundForStep } from './soundBridge.js';
 import { closeAllStatsPopups } from './statsPopup.js';
+import { bindRangeToNumber } from './rangeInput.js';
+import { getTickDelay, getStepsPerTick, FRAME_BUDGET_MS } from './speedCurve.js';
+import {
+	pushHistoryEntry,
+	getHistoryEntry,
+	getHistoryIndex,
+	decrementHistoryIndex,
+	advanceSingleModeCursor as advanceHistoryCursor,
+	isPlaybackCaughtUpAndDone as historyIsCaughtUpAndDone,
+	resetHistory,
+} from './stepHistory.js';
+import {
+	getTrackStatus,
+	isTrackDone,
+	getNextTrackStep,
+	isEverythingDone as trackStateIsEverythingDone,
+	resetTrackState,
+	markTrackDone,
+	getRaceFinishTimes,
+} from './trackState.js';
+
+// re-exported public API - lived here before the split, now sourced from trackState.js
+export { getTrackStatus };
 
 // --- get the elements ---
 const appEl = document.getElementById('app');
@@ -64,28 +87,7 @@ let currentMaxValue = 1;
 let isPlaying = false;
 let animationTimeoutId = null;
 let animationFrameId = null;
-
-// --- race mode state ---
 let isRaceMode = false;
-let generatorA = null;
-let generatorB = null;
-let trackADone = false;
-let trackBDone = false;
-let trackAFinishMs = null;
-let trackBFinishMs = null;
-
-// --- timeline / step-history state ---
-const MAX_HISTORY_STEPS = 2000;
-let stepHistory = []; // { stepData, comparisons, swaps, elapsedMs }[]
-let historyIndex = -1;
-
-// --- speed curve tuning ---
-const MAX_TICK_MS = 220;
-const FRAME_TICK_MS = 16;
-const BATCH_START_SPEED = 350;
-const SPEED_MAX = 500;
-const MAX_STEPS_PER_TICK = 4000;
-const FRAME_BUDGET_MS = 8;
 
 // --- public api ---
 
@@ -120,13 +122,6 @@ export function isRaceModeOn() {
 
 export function getCurrentMaxValue() {
 	return currentMaxValue;
-}
-
-export function getTrackStatus(slot) {
-	return {
-		isDone: slot === 'A' ? trackADone : trackBDone,
-		finishMs: slot === 'A' ? trackAFinishMs : trackBFinishMs,
-	};
 }
 
 export function updateStatLabels() {
@@ -210,8 +205,9 @@ export function handleStepForward() {
 	}
 
 	if (advanceSingleModeCursor()) {
-		displayHistoryEntry(historyIndex);
-		playSoundForStep(stepHistory[historyIndex].stepData);
+		const index = getHistoryIndex();
+		displayHistoryEntry(index);
+		playSoundForStep(getHistoryEntry(index).stepData);
 	}
 
 	if (isPlaybackCaughtUpAndDone()) onRunComplete();
@@ -222,17 +218,17 @@ export function handleStepBack() {
 	stopPlaybackLoop();
 	restoreVisualizerView();
 
-	if (historyIndex < 0) return; // already at the og array
+	if (getHistoryIndex() < 0) return; // already at the og array
 
-	historyIndex--;
+	const newIndex = decrementHistoryIndex();
 
-	if (historyIndex < 0) {
+	if (newIndex < 0) {
 		drawTrack('A', null);
 		setTrackCounterDisplay('A', 0, 0);
 		setTimerDisplayText('A', formatElapsedMs(0));
 		updateTimelineButtonStates();
 	} else {
-		displayHistoryEntry(historyIndex);
+		displayHistoryEntry(newIndex);
 	}
 }
 
@@ -241,7 +237,7 @@ export function handleJumpToEnd() {
 	stopPlaybackLoop();
 	restoreVisualizerView();
 
-	if(isPlaybackCaughtUpAndDone()) return;
+	if (isPlaybackCaughtUpAndDone()) return;
 
 	const sortedArray = [...currentArray].sort((a, b) => a - b);
 	const finalStep = {
@@ -251,10 +247,9 @@ export function handleJumpToEnd() {
 		sortedIndices: sortedArray.map((_, i) => i),
 	};
 
-	trackADone = true;
-	trackAFinishMs = getCurrentElapsedMs();
+	markTrackDone('A');
 	pushHistoryEntry(finalStep);
-	displayHistoryEntry(historyIndex);
+	displayHistoryEntry(getHistoryIndex());
 	onRunComplete();
 }
 
@@ -312,15 +307,8 @@ function alignTimelineToCanvas() {
 
 // --- timeline / history helpers ---
 
-function pushHistoryEntry(stepData) {
-	const { comparisons, swaps } = getTrackCounters('A');
-	stepHistory.push({ stepData, comparisons, swaps, elapsedMs: getCurrentElapsedMs() });
-	if (stepHistory.length > MAX_HISTORY_STEPS) stepHistory.shift();
-	historyIndex = stepHistory.length - 1;
-}
-
 function displayHistoryEntry(index) {
-	const entry = stepHistory[index];
+	const entry = getHistoryEntry(index);
 	if (!entry) return;
 	drawTrack('A', entry.stepData);
 	setTrackCounterDisplay('A', entry.comparisons, entry.swaps);
@@ -329,17 +317,11 @@ function displayHistoryEntry(index) {
 }
 
 function advanceSingleModeCursor() {
-	if (historyIndex < stepHistory.length - 1) {
-		historyIndex++;
-		return true;
-	}
-	if (trackADone) return false;
-	const step = getNextTrackStep('A'); // pushes a history entry + sets historyIndex to the new
-	return step !== null;
+	return advanceHistoryCursor(isTrackDone('A'), () => getNextTrackStep('A', currentArray, isRaceMode));
 }
 
 function isPlaybackCaughtUpAndDone() {
-	return trackADone && historyIndex >= stepHistory.length - 1;
+	return historyIsCaughtUpAndDone(isTrackDone('A'));
 }
 
 function isPlaybackFullyFinished() {
@@ -348,7 +330,7 @@ function isPlaybackFullyFinished() {
 
 function updateTimelineButtonStates() {
 	if (isRaceMode) return;
-	stepBackBtn.disabled = historyIndex < 0;
+	stepBackBtn.disabled = getHistoryIndex() < 0;
 	jumpEndBtn.disabled = isPlaybackCaughtUpAndDone();
 }
 
@@ -364,14 +346,8 @@ function stopPlaybackLoop() {
 }
 
 function resetRaceState() {
-	generatorA = null;
-	generatorB = null;
-	trackADone = false;
-	trackBDone = false;
-	trackAFinishMs = null;
-	trackBFinishMs = null;
-	stepHistory = [];
-	historyIndex = -1;
+	resetTrackState();
+	resetHistory();
 	resetCounters();
 	winnerBadgeAEl.classList.remove('visible');
 	winnerBadgeBEl.classList.remove('visible');
@@ -400,42 +376,14 @@ function handleAlgorithmChangeB() {
 	closeAllStatsPopups();
 }
 
-function getNextTrackStep(slot) {
-	const isA = slot === 'A';
-	if (isA ? trackADone : trackBDone) return null;
-
-	let gen = isA ? generatorA : generatorB;
-	if (!gen) {
-		gen = getAlgorithmForSlot(slot).run(currentArray);
-		if (isA) generatorA = gen;
-		else generatorB = gen;
-	}
-
-	const result = gen.next();
-	if (result.done) {
-		if (isA) {
-			trackADone = true;
-			trackAFinishMs = getCurrentElapsedMs();
-		} else {
-			trackBDone = true;
-			trackBFinishMs = getCurrentElapsedMs();
-		}
-		return null;
-	}
-
-	tallyTrackStep(slot, result.value);
-
-	if (isA && !isRaceMode) pushHistoryEntry(result.value);
-
-	return result.value;
-}
-
 function isEverythingDone() {
-	return isRaceMode ? trackADone && trackBDone : trackADone;
+	return trackStateIsEverythingDone(isRaceMode);
 }
 
 function showRaceBanner() {
 	if (!isRaceMode) return;
+
+	const { trackAFinishMs, trackBFinishMs } = getRaceFinishTimes();
 
 	if (trackAFinishMs === trackBFinishMs) {
 		winnerBadgeAEl.textContent = "Draw!";
@@ -461,39 +409,26 @@ function onRunComplete() {
 }
 
 function advanceOneStep() {
-	const stepA = getNextTrackStep('A');
+	const stepA = getNextTrackStep('A', currentArray, isRaceMode);
 	if (stepA) {
 		drawTrack('A', stepA);
 		playSoundForStep(stepA);
 	}
 
 	if (isRaceMode) {
-		const stepB = getNextTrackStep('B');
+		const stepB = getNextTrackStep('B', currentArray, isRaceMode);
 		if (stepB) drawTrack('B', stepB);
 	}
 
 	if (isEverythingDone()) onRunComplete();
 }
 
-function getTickDelay() {
-	const speed = Number(speedSlider.value);
-	if (speed >= BATCH_START_SPEED) return 0;
-	const t = speed / BATCH_START_SPEED;
-	return FRAME_TICK_MS * Math.pow(MAX_TICK_MS / FRAME_TICK_MS, 1 - t);
-}
-
-function getStepsPerTick() {
-	const speed = Number(speedSlider.value);
-	if (speed < BATCH_START_SPEED) return 1;
-	const t = (speed - BATCH_START_SPEED) / (SPEED_MAX - BATCH_START_SPEED);
-	return Math.max(1, Math.round(Math.pow(MAX_STEPS_PER_TICK, t)));
-}
-
 function runAnimationLoop() {
 	if (!isPlaying) return;
 
-	const tickDelay = getTickDelay();
-	const stepsThisTick = getStepsPerTick();
+	const speed = Number(speedSlider.value);
+	const tickDelay = getTickDelay(speed);
+	const stepsThisTick = getStepsPerTick(speed);
 	const tickStart = performance.now();
 
 	if (isRaceMode) {
@@ -504,12 +439,12 @@ function runAnimationLoop() {
 			if (performance.now() - tickStart > FRAME_BUDGET_MS) break;
 			if (isEverythingDone()) break;
 
-			if (!trackADone) {
-				const s = getNextTrackStep('A');
+			if (!isTrackDone('A')) {
+				const s = getNextTrackStep('A', currentArray, isRaceMode);
 				if (s) lastStepA = s;
 			}
-			if (!trackBDone) {
-				const s = getNextTrackStep('B');
+			if (!isTrackDone('B')) {
+				const s = getNextTrackStep('B', currentArray, isRaceMode);
 				if (s) lastStepB = s;
 			}
 		}
@@ -532,8 +467,9 @@ function runAnimationLoop() {
 		}
 
 		if (advanced) {
-			displayHistoryEntry(historyIndex);
-			playSoundForStep(stepHistory[historyIndex].stepData);
+			const index = getHistoryIndex();
+			displayHistoryEntry(index);
+			playSoundForStep(getHistoryEntry(index).stepData);
 		}
 
 		if (isPlaybackCaughtUpAndDone()) {
@@ -602,25 +538,4 @@ function handleBenchmark() {
 		const baseArray = generateShuffledArray(size);
 		runBenchmark(ctx, canvas, baseArray, size);
 	}, 30);
-}
-
-// --- range/num binding ---
-
-function bindRangeToNumber(rangeEl, numberEl, onChange) {
-	const min = Number(rangeEl.min);
-	const max = Number(rangeEl.max);
-
-	rangeEl.addEventListener('input', () => {
-		numberEl.value = rangeEl.value;
-		onChange();
-	});
-
-	numberEl.addEventListener('change', () => {
-		let value = Number(numberEl.value);
-		if (Number.isNaN(value)) value = min;
-		value = Math.min(max, Math.max(min, value));
-		numberEl.value = value;
-		rangeEl.value = value;
-		onChange();
-	});
 }
