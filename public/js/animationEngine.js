@@ -30,6 +30,7 @@ import {
 	markTrackDone,
 	getRaceFinishTimes,
 } from './trackState.js';
+import { initArrayConfig, generateArrayForCurrentConfig } from './arrayConfig.js';
 
 // re-exported public API - lived here before the split, now sourced from trackState.js
 export { getTrackStatus };
@@ -95,6 +96,8 @@ export function initAnimationEngine() {
 	bindRangeToNumber(sizeSlider, sizeNumber, () => {});
 	bindRangeToNumber(speedSlider, speedNumber, () => {});
 
+	initArrayConfig();
+
 	newArrayBtn.addEventListener('click', handleNewArray);
 	resetBtn.addEventListener('click', handleResetTimeline);
 	stepBackBtn.addEventListener('click', handleStepBack);
@@ -153,8 +156,8 @@ export function handleAlgorithmSelect(slot) {
 
 export function handleNewArray() {
 	const size = Number(sizeSlider.value);
-	currentArray = generateShuffledArray(size);
-	currentMaxValue = size;
+	currentArray = generateArrayForCurrentConfig(size);
+	currentMaxValue = Math.max(...currentArray);
 	stopPlaybackLoop();
 	resetRaceState();
 	resetTimer();
@@ -262,15 +265,6 @@ export function handleResetTimeline() {
 }
 
 // --- rendering ---
-
-function generateShuffledArray(size) {
-	const values = Array.from({ length: size }, (_, i) => i + 1);
-	for (let i = values.length - 1; i > 0; i--) {
-		const j = Math.floor(Math.random() * (i + 1));
-		[values[i], values[j]] = [values[j], values[i]];
-	}
-	return values;
-}
 
 function drawTrack(slot, stepData) {
 	const targetCtx = slot === 'A' ? ctx : ctxB;
@@ -535,7 +529,7 @@ function handleBenchmark() {
 	showBenchmarkLoading(ctx, canvas);
 	setTimeout(() => {
 		const size = Number(sizeSlider.value);
-		const baseArray = generateShuffledArray(size);
+		const baseArray = generateArrayForCurrentConfig(size);
 		runBenchmark(ctx, canvas, baseArray, size);
 	}, 30);
 }
