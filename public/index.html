@@ -13,6 +13,7 @@
         <link rel="stylesheet" href="css/canvas.css">
         <link rel="stylesheet" href="css/command-palette.css">
         <link rel="stylesheet" href="css/array-config.css">
+        <link rel="stylesheet" href="css/toast.css">
         <link rel="stylesheet" href="css/code-panel.css">
         <link rel="stylesheet" href="css/icon-btn.css">
         <link rel="stylesheet" href="css/important.css">
@@ -104,6 +105,7 @@
 
                 <div class="button-row">
                     <button id="new-array-btn">New Array</button>
+                    <button id="copy-array-btn">Copy Array</button>
                     <button id="benchmark-btn">Benchmark</button>
                     <button id="code-btn">Show Code</button>
                 </div>
@@ -290,6 +292,8 @@
                 </div>
             </div>
         </div>
+
+        <div id="toast-container" aria-live="polite"></div>
 
         <script type="module" src="js/main.js"></script>
     </body>

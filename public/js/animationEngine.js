@@ -31,6 +31,7 @@ import {
 	getRaceFinishTimes,
 } from './trackState.js';
 import { initArrayConfig, generateArrayForCurrentConfig } from './arrayConfig.js';
+import { showToast } from './toast.js';
 
 // re-exported public API - lived here before the split, now sourced from trackState.js
 export { getTrackStatus };
@@ -54,6 +55,7 @@ const speedSlider = document.getElementById('speed-slider');
 const speedNumber = document.getElementById('speed-number');
 
 const newArrayBtn = document.getElementById('new-array-btn');
+const copyArrayBtn = document.getElementById('copy-array-btn');
 const resetBtn = document.getElementById('reset-btn');
 const stepBackBtn = document.getElementById('step-back-btn');
 const playPauseBtn = document.getElementById('play-pause-btn');
@@ -99,12 +101,14 @@ export function initAnimationEngine() {
 	initArrayConfig();
 
 	newArrayBtn.addEventListener('click', handleNewArray);
+	copyArrayBtn.addEventListener('click', handleCopyArray);
+	benchmarkBtn.addEventListener('click', handleBenchmark);
+
 	resetBtn.addEventListener('click', handleResetTimeline);
 	stepBackBtn.addEventListener('click', handleStepBack);
 	playPauseBtn.addEventListener('click', togglePlayPause);
 	stepForwardBtn.addEventListener('click', handleStepForward);
 	jumpEndBtn.addEventListener('click', handleJumpToEnd);
-	benchmarkBtn.addEventListener('click', handleBenchmark);
 	raceToggleBtn.addEventListener('click', toggleRaceMode);
 
 	// align timeline to canvas when its width is changed
@@ -163,6 +167,12 @@ export function handleNewArray() {
 	resetTimer();
 	restoreVisualizerView();
 	renderCurrentArray();
+}
+
+export function handleCopyArray() {
+	navigator.clipboard.writeText(currentArray.join(', '))
+		.then(() => showToast('Array Copied to ClipBoard!'))
+		.catch(() => showToast('Copy Failed', { variant: 'error' }));
 }
 
 export function togglePlayPause() {
