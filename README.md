@@ -9,9 +9,11 @@ You can view the actual site on cloudflare pages [here.][commiecake]
 ## Features
 
 - **20+ Algorithms**, of differing categories chosen through an intuitive UI palette
+- **Array Configurations** such as sorted, reversed, nearly sorted or a full custom array.
 - **Live stats** such as elapsed time, comparisons and swaps made
 - **Benchmark mode** to run every algorithm on the same array that uses no resources on animations, and charts the results for comparison
 - **Code panel** to view each algorithm's source code
+- **Copy array** to copy the current array as text
 - Toggleable **Sound effects** for every swap and comparison made during sorting
 - **Responsive Scaling** to allow usability on desktop or mobile
 - **Race Mode** to compare algorithms against each other

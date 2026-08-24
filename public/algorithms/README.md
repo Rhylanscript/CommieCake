@@ -144,6 +144,7 @@ const meta = {
 
 ## Common mistakes (learned the hard way on this project)
 
+- **Don't assume the array is a clean `1...n` permutation** - the array configuration feature lets users pick few unique (duplicate values) or fully custom arrays (including negatives and non-integers). If your algorithm doesn't support these, document or guard against the assumption rather than just failing.
 - **`yield* someGenerator() && somethingElse`** doesnt do what it looks like because `yield*` has lower precedence than `&&`, so it will try to delegate into the *result* of the whole expression, not just the generator call for some reason. Wrap it in brackets: `(yield* someGenerator()) && somethingElse`
 - **A closure defined and called repeatedly inside a hot loop is much more expensive inside a generator than the same pattern in a normal function** - V8 doesnt optimize it the same way (FOR SOME REASON??????). If a value doesnt change within an outer loop iteration, compute it once outside the inner loop, not via a function called from inside it.
 - **Don't forget the final "all sorted" yield.** Without it, the algorithm will stop animating one step early, and the bars will never show fully sorted (very sad)
