@@ -30,6 +30,8 @@ import {
 	markTrackDone,
 	getRaceFinishTimes,
 } from './trackState.js';
+import { initArrayConfig, generateArrayForCurrentConfig } from './arrayConfig.js';
+import { showToast } from './toast.js';
 
 // re-exported public API - lived here before the split, now sourced from trackState.js
 export { getTrackStatus };
@@ -53,6 +55,7 @@ const speedSlider = document.getElementById('speed-slider');
 const speedNumber = document.getElementById('speed-number');
 
 const newArrayBtn = document.getElementById('new-array-btn');
+const copyArrayBtn = document.getElementById('copy-array-btn');
 const resetBtn = document.getElementById('reset-btn');
 const stepBackBtn = document.getElementById('step-back-btn');
 const playPauseBtn = document.getElementById('play-pause-btn');
@@ -95,13 +98,17 @@ export function initAnimationEngine() {
 	bindRangeToNumber(sizeSlider, sizeNumber, () => {});
 	bindRangeToNumber(speedSlider, speedNumber, () => {});
 
+	initArrayConfig();
+
 	newArrayBtn.addEventListener('click', handleNewArray);
+	copyArrayBtn.addEventListener('click', handleCopyArray);
+	benchmarkBtn.addEventListener('click', handleBenchmark);
+
 	resetBtn.addEventListener('click', handleResetTimeline);
 	stepBackBtn.addEventListener('click', handleStepBack);
 	playPauseBtn.addEventListener('click', togglePlayPause);
 	stepForwardBtn.addEventListener('click', handleStepForward);
 	jumpEndBtn.addEventListener('click', handleJumpToEnd);
-	benchmarkBtn.addEventListener('click', handleBenchmark);
 	raceToggleBtn.addEventListener('click', toggleRaceMode);
 
 	// align timeline to canvas when its width is changed
@@ -153,13 +160,19 @@ export function handleAlgorithmSelect(slot) {
 
 export function handleNewArray() {
 	const size = Number(sizeSlider.value);
-	currentArray = generateShuffledArray(size);
-	currentMaxValue = size;
+	currentArray = generateArrayForCurrentConfig(size);
+	currentMaxValue = Math.max(...currentArray);
 	stopPlaybackLoop();
 	resetRaceState();
 	resetTimer();
 	restoreVisualizerView();
 	renderCurrentArray();
+}
+
+export function handleCopyArray() {
+	navigator.clipboard.writeText(currentArray.join(', '))
+		.then(() => showToast('Array Copied to ClipBoard!'))
+		.catch(() => showToast('Copy Failed', { variant: 'error' }));
 }
 
 export function togglePlayPause() {
@@ -262,15 +275,6 @@ export function handleResetTimeline() {
 }
 
 // --- rendering ---
-
-function generateShuffledArray(size) {
-	const values = Array.from({ length: size }, (_, i) => i + 1);
-	for (let i = values.length - 1; i > 0; i--) {
-		const j = Math.floor(Math.random() * (i + 1));
-		[values[i], values[j]] = [values[j], values[i]];
-	}
-	return values;
-}
 
 function drawTrack(slot, stepData) {
 	const targetCtx = slot === 'A' ? ctx : ctxB;
@@ -535,7 +539,7 @@ function handleBenchmark() {
 	showBenchmarkLoading(ctx, canvas);
 	setTimeout(() => {
 		const size = Number(sizeSlider.value);
-		const baseArray = generateShuffledArray(size);
+		const baseArray = generateArrayForCurrentConfig(size);
 		runBenchmark(ctx, canvas, baseArray, size);
 	}, 30);
 }

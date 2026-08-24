@@ -1,0 +1,66 @@
+/* --- array config select row --- */
+
+.array-config-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.array-config-row select {
+    flex: 1;
+}
+
+.array-config-edit-btn {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    border: 1px solid var(--panel-border);
+    background: var(--bg);
+    color: var(--text);
+    cursor: pointer;
+}
+
+.array-config-edit-btn:hover,
+.array-config-edit-btn:focus-visible {
+    border-color: var(--teal);
+    color: var(--teal);
+    outline: none;
+}
+
+.array-config-edit-btn.hidden {
+    display: none;
+}
+
+.array-config-edit-btn svg {
+    width: 16px;
+    height: 16px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+/* --- custom array modal --- */
+
+.array-config-modal-label {
+    font-size: 0.75rem;
+    color: var(--text-dim);
+}
+
+.array-config-textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.array-config-error {
+    margin: 0;
+    font-size: 0.72rem;
+    color: var(--amber);
+    min-height: 1em;
+}
