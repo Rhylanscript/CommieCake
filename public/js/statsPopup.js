@@ -10,6 +10,7 @@ const popups = ['A', 'B'].map((slot) => ({
 
 export function initStatsPopup() {
 	popups.forEach(({ btn, popup }) => {
+		document.body.appendChild(popup);
 		btn.addEventListener('click', (e) => {
 			e.stopPropagation();
 			setStatsPopupOpen(btn, popup, !popup.classList.contains('open'));
